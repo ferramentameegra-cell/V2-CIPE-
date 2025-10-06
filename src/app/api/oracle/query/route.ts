@@ -72,6 +72,13 @@ const ORACLE_RESPONSES = {
   }
 };
 
+// Tipos para as respostas
+interface OracleResponse {
+  response: string;
+  confidence: number;
+  sources: string[];
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { candidateId, context, message, history } = await request.json();
@@ -91,11 +98,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar resposta exata ou similar
-    let response = contextResponses[message as keyof typeof contextResponses];
+    let response: OracleResponse = contextResponses[message as keyof typeof contextResponses];
     
     if (!response) {
       // Resposta genérica baseada no contexto
-      const genericResponses = {
+      const genericResponses: Record<string, OracleResponse> = {
         dashboard: {
           response: 'Com base nas métricas atuais, posso ver que a campanha está performando bem. Intenção de voto em crescimento, engajamento digital forte e boa receptividade do público. Precisa de algum insight específico?',
           confidence: 0.75,
@@ -118,7 +125,7 @@ export async function POST(request: NextRequest) {
         }
       };
       
-      response = genericResponses[context as keyof typeof genericResponses] || {
+      response = genericResponses[context] || {
         response: 'Entendi sua pergunta. Vou analisar os dados mais recentes e fornecer insights relevantes para sua campanha.',
         confidence: 0.70,
         sources: ['AI Analysis']
