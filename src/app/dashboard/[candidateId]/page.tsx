@@ -4,11 +4,18 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, Users, Target, AlertTriangle, Calendar, Brain, Send, BarChart3, Settings, LogOut } from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { 
+  TrendingUp, TrendingDown, Users, Target, AlertTriangle, Calendar, Brain, Send, 
+  BarChart3, Settings, LogOut, MapPin, Zap, Shield, MessageSquare, Globe, 
+  Search, FileText, DollarSign, Bell, User, Lock, Smartphone, Mail, 
+  Home, PieChart, UserCheck, Filter, Award, Share2, Eye, Clock
+} from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 import OracleCipe from '@/components/OracleCipe';
 import SalaDeGuerra from '@/components/modules/SalaDeGuerra';
 import WazeEleitoral from '@/components/modules/WazeEleitoral';
+import CRMEleitoral from '@/components/modules/CRMEleitoral';
+import FunilMobilizacao from '@/components/modules/FunilMobilizacao';
 
 interface DashboardProps {
   params: { candidateId: string };
@@ -69,10 +76,13 @@ export default function DashboardPage({ params }: DashboardProps) {
     { name: 'Jun', intencao: 28, engajamento: 67 }
   ];
 
+  // Segmentação política corrigida
   const segmentacaoData = [
-    { name: 'Jovens (18-29)', value: 35, color: '#0066FF' },
-    { name: 'Adultos (30-49)', value: 40, color: '#6366F1' },
-    { name: 'Maduros (50+)', value: 25, color: '#06B6D4' }
+    { name: 'Esquerda', value: 15, color: '#EF4444' },
+    { name: 'Centro Esquerda', value: 20, color: '#F97316' },
+    { name: 'Centro', value: 25, color: '#EAB308' },
+    { name: 'Centro Direita', value: 22, color: '#3B82F6' },
+    { name: 'Direita', value: 18, color: '#8B5CF6' }
   ];
 
   const renderModule = () => {
@@ -81,6 +91,10 @@ export default function DashboardPage({ params }: DashboardProps) {
         return <SalaDeGuerra candidateId={candidateId} />;
       case 'waze_eleitoral':
         return <WazeEleitoral candidateId={candidateId} />;
+      case 'crm_eleitoral':
+        return <CRMEleitoral candidateId={candidateId} />;
+      case 'funil_mobilizacao':
+        return <FunilMobilizacao candidateId={candidateId} />;
       case 'dashboard':
       default:
         return renderDashboard();
@@ -210,14 +224,14 @@ export default function DashboardPage({ params }: DashboardProps) {
           </CardContent>
         </Card>
 
-        {/* Segmentação de Eleitores */}
+        {/* Segmentação Política de Eleitores */}
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="text-white">Segmentação de Eleitores</CardTitle>
+            <CardTitle className="text-white">Segmentação Política de Eleitores</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
+              <RechartsPieChart>
                 <Pie
                   data={segmentacaoData}
                   cx="50%"
@@ -232,7 +246,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                   ))}
                 </Pie>
                 <Tooltip />
-              </PieChart>
+              </RechartsPieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -313,7 +327,7 @@ export default function DashboardPage({ params }: DashboardProps) {
             
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <AlertTriangle className="h-5 w-5 text-slate-300" />
+                <Bell className="h-5 w-5 text-slate-300" />
                 <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
                   {alerts.length}
                 </span>
@@ -323,6 +337,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                   <span className="text-white text-sm font-medium">RN</span>
                 </div>
                 <span className="text-slate-300">Ronaldo Nogueira</span>
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               </div>
             </div>
           </div>
@@ -330,8 +345,8 @@ export default function DashboardPage({ params }: DashboardProps) {
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="bg-slate-800/50 backdrop-blur-lg border-r border-slate-700 h-screen w-64 fixed inset-y-0 left-0 z-40">
+        {/* Sidebar Completa conforme Layout Obrigatório */}
+        <aside className="bg-slate-800/50 backdrop-blur-lg border-r border-slate-700 h-screen w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto">
           <div className="p-6">
             {/* Perfil do Candidato */}
             <div className="mb-8">
@@ -347,22 +362,34 @@ export default function DashboardPage({ params }: DashboardProps) {
               </div>
             </div>
 
-            {/* Navegação */}
+            {/* Navegação Completa */}
             <nav className="space-y-2">
-              <button 
-                onClick={() => setActiveModule('dashboard')}
-                className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeModule === 'dashboard' 
-                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                    : 'text-slate-300 hover:bg-slate-700'
-                }`}
-              >
-                <BarChart3 className="h-5 w-5" />
-                <span>Dashboard</span>
-              </button>
+              {/* DASHBOARD */}
+              <div>
+                <button 
+                  onClick={() => setActiveModule('dashboard')}
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                    activeModule === 'dashboard' 
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                      : 'text-slate-300 hover:bg-slate-700'
+                  }`}
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span>📊 DASHBOARD</span>
+                </button>
+                {activeModule === 'dashboard' && (
+                  <div className="ml-6 mt-1">
+                    <button className="flex items-center space-x-2 px-3 py-1 text-sm text-slate-400 hover:text-white">
+                      <TrendingUp className="h-4 w-4" />
+                      <span>📈 Visão Geral</span>
+                    </button>
+                  </div>
+                )}
+              </div>
               
+              {/* INTELIGÊNCIA */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Inteligência</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">🔍 INTELIGÊNCIA</h4>
                 <div className="space-y-1">
                   <button 
                     onClick={() => setActiveModule('sala_guerra')}
@@ -373,7 +400,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                     }`}
                   >
                     <AlertTriangle className="h-4 w-4" />
-                    <span>Sala de Guerra</span>
+                    <span>🏢 Sala de Guerra</span>
                   </button>
                   <button 
                     onClick={() => setActiveModule('waze_eleitoral')}
@@ -383,44 +410,145 @@ export default function DashboardPage({ params }: DashboardProps) {
                         : 'text-slate-300 hover:bg-slate-700'
                     }`}
                   >
-                    <Target className="h-4 w-4" />
-                    <span>Waze Eleitoral</span>
+                    <MapPin className="h-4 w-4" />
+                    <span>🧭 Waze Eleitoral</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <AlertTriangle className="h-4 w-4" />
-                    <span>Radar de Crises</span>
+                    <span>⚠️ Radar de Crises</span>
                   </button>
-                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setActiveModule('funil_mobilizacao')}
+                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                      activeModule === 'funil_mobilizacao' 
+                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
+                        : 'text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
                     <TrendingUp className="h-4 w-4" />
-                    <span>Funil de Mobilização</span>
+                    <span>📈 Funil de Mobilização</span>
                   </button>
                 </div>
               </div>
 
+              {/* ARSENAL DE IA */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Arsenal de IA</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">🤖 ARSENAL DE IA</h4>
                 <div className="space-y-1">
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Brain className="h-4 w-4" />
-                    <span>Central de IAs</span>
+                    <span>🧠 Central de IAs</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Users className="h-4 w-4" />
-                    <span>Clone Digital</span>
+                    <span>🤖 Clone Digital</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Shield className="h-4 w-4" />
+                    <span>🛡️ Blindagem</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>📢 Comunicação</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Globe className="h-4 w-4" />
+                    <span>🌐 Narrativa RA</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <BarChart3 className="h-4 w-4" />
+                    <span>📊 Pesquisas Auto</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Search className="h-4 w-4" />
+                    <span>🔍 Análise Adversários</span>
                   </button>
                 </div>
               </div>
 
+              {/* ELEITORES */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Eleitores</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">👥 ELEITORES</h4>
                 <div className="space-y-1">
-                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setActiveModule('crm_eleitoral')}
+                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                      activeModule === 'crm_eleitoral' 
+                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' 
+                        : 'text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
                     <Users className="h-4 w-4" />
-                    <span>CRM Eleitoral</span>
+                    <span>👥 CRM Eleitoral</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Filter className="h-4 w-4" />
+                    <span>👥 Segmentação</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Target className="h-4 w-4" />
-                    <span>Segmentação</span>
+                    <span>👥 Análise Ideológica</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Award className="h-4 w-4" />
+                    <span>👥 Embaixadores</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* DIGITAL */}
+              <div className="pt-4">
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">📱 DIGITAL</h4>
+                <div className="space-y-1">
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Smartphone className="h-4 w-4" />
+                    <span>📱 Redes Sociais</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Mail className="h-4 w-4" />
+                    <span>📧 Email Marketing</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Home className="h-4 w-4" />
+                    <span>🌐 Sites & Landing</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* PERFORMANCE */}
+              <div className="pt-4">
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">📈 PERFORMANCE</h4>
+                <div className="space-y-1">
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <FileText className="h-4 w-4" />
+                    <span>📊 Relatórios</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <DollarSign className="h-4 w-4" />
+                    <span>💰 Orçamento & ROI</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Calendar className="h-4 w-4" />
+                    <span>📅 Calendário</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* CONFIGURAÇÕES */}
+              <div className="pt-4">
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">⚙️ CONFIGURAÇÕES</h4>
+                <div className="space-y-1">
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <User className="h-4 w-4" />
+                    <span>👤 Perfil</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Bell className="h-4 w-4" />
+                    <span>🔔 Notificações</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
+                    <Lock className="h-4 w-4" />
+                    <span>🔒 Segurança</span>
                   </button>
                 </div>
               </div>
