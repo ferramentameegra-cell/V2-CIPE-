@@ -309,7 +309,7 @@ export default function DashboardPage({ params }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      {/* Header */}
+      {/* Header Clean e Elegante */}
       <header className="bg-slate-800/50 backdrop-blur-lg border-b border-slate-700 sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
@@ -345,7 +345,7 @@ export default function DashboardPage({ params }: DashboardProps) {
       </header>
 
       <div className="flex">
-        {/* Sidebar Completa conforme Layout Obrigatório */}
+        {/* Sidebar Clean e Elegante */}
         <aside className="bg-slate-800/50 backdrop-blur-lg border-r border-slate-700 h-screen w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto">
           <div className="p-6">
             {/* Perfil do Candidato */}
@@ -362,7 +362,7 @@ export default function DashboardPage({ params }: DashboardProps) {
               </div>
             </div>
 
-            {/* Navegação Completa */}
+            {/* Navegação Clean */}
             <nav className="space-y-2">
               {/* DASHBOARD */}
               <div>
@@ -375,13 +375,13 @@ export default function DashboardPage({ params }: DashboardProps) {
                   }`}
                 >
                   <BarChart3 className="h-5 w-5" />
-                  <span>📊 DASHBOARD</span>
+                  <span>Dashboard</span>
                 </button>
                 {activeModule === 'dashboard' && (
                   <div className="ml-6 mt-1">
                     <button className="flex items-center space-x-2 px-3 py-1 text-sm text-slate-400 hover:text-white">
                       <TrendingUp className="h-4 w-4" />
-                      <span>📈 Visão Geral</span>
+                      <span>Visão Geral</span>
                     </button>
                   </div>
                 )}
@@ -389,7 +389,7 @@ export default function DashboardPage({ params }: DashboardProps) {
               
               {/* INTELIGÊNCIA */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">🔍 INTELIGÊNCIA</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Inteligência</h4>
                 <div className="space-y-1">
                   <button 
                     onClick={() => setActiveModule('sala_guerra')}
@@ -400,7 +400,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                     }`}
                   >
                     <AlertTriangle className="h-4 w-4" />
-                    <span>🏢 Sala de Guerra</span>
+                    <span>Sala de Guerra</span>
                   </button>
                   <button 
                     onClick={() => setActiveModule('waze_eleitoral')}
@@ -411,11 +411,11 @@ export default function DashboardPage({ params }: DashboardProps) {
                     }`}
                   >
                     <MapPin className="h-4 w-4" />
-                    <span>🧭 Waze Eleitoral</span>
+                    <span>Waze Eleitoral</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <AlertTriangle className="h-4 w-4" />
-                    <span>⚠️ Radar de Crises</span>
+                    <span>Radar de Crises</span>
                   </button>
                   <button 
                     onClick={() => setActiveModule('funil_mobilizacao')}
@@ -426,49 +426,49 @@ export default function DashboardPage({ params }: DashboardProps) {
                     }`}
                   >
                     <TrendingUp className="h-4 w-4" />
-                    <span>📈 Funil de Mobilização</span>
+                    <span>Funil de Mobilização</span>
                   </button>
                 </div>
               </div>
 
               {/* ARSENAL DE IA */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">🤖 ARSENAL DE IA</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Arsenal de IA</h4>
                 <div className="space-y-1">
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Brain className="h-4 w-4" />
-                    <span>🧠 Central de IAs</span>
+                    <span>Central de IAs</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Users className="h-4 w-4" />
-                    <span>🤖 Clone Digital</span>
+                    <span>Clone Digital</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Shield className="h-4 w-4" />
-                    <span>🛡️ Blindagem</span>
+                    <span>Blindagem</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <MessageSquare className="h-4 w-4" />
-                    <span>📢 Comunicação</span>
+                    <span>Comunicação</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Globe className="h-4 w-4" />
-                    <span>🌐 Narrativa RA</span>
+                    <span>Narrativa RA</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <BarChart3 className="h-4 w-4" />
-                    <span>📊 Pesquisas Auto</span>
+                    <span>Pesquisas Auto</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Search className="h-4 w-4" />
-                    <span>🔍 Análise Adversários</span>
+                    <span>Análise Adversários</span>
                   </button>
                 </div>
               </div>
 
               {/* ELEITORES */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">👥 ELEITORES</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Eleitores</h4>
                 <div className="space-y-1">
                   <button 
                     onClick={() => setActiveModule('crm_eleitoral')}
@@ -479,76 +479,76 @@ export default function DashboardPage({ params }: DashboardProps) {
                     }`}
                   >
                     <Users className="h-4 w-4" />
-                    <span>👥 CRM Eleitoral</span>
+                    <span>CRM Eleitoral</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Filter className="h-4 w-4" />
-                    <span>👥 Segmentação</span>
+                    <span>Segmentação</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Target className="h-4 w-4" />
-                    <span>👥 Análise Ideológica</span>
+                    <span>Análise Ideológica</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Award className="h-4 w-4" />
-                    <span>👥 Embaixadores</span>
+                    <span>Embaixadores</span>
                   </button>
                 </div>
               </div>
 
               {/* DIGITAL */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">📱 DIGITAL</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Digital</h4>
                 <div className="space-y-1">
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Smartphone className="h-4 w-4" />
-                    <span>📱 Redes Sociais</span>
+                    <span>Redes Sociais</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Mail className="h-4 w-4" />
-                    <span>📧 Email Marketing</span>
+                    <span>Email Marketing</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Home className="h-4 w-4" />
-                    <span>🌐 Sites & Landing</span>
+                    <span>Sites & Landing</span>
                   </button>
                 </div>
               </div>
 
               {/* PERFORMANCE */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">📈 PERFORMANCE</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Performance</h4>
                 <div className="space-y-1">
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <FileText className="h-4 w-4" />
-                    <span>📊 Relatórios</span>
+                    <span>Relatórios</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <DollarSign className="h-4 w-4" />
-                    <span>💰 Orçamento & ROI</span>
+                    <span>Orçamento & ROI</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Calendar className="h-4 w-4" />
-                    <span>📅 Calendário</span>
+                    <span>Calendário</span>
                   </button>
                 </div>
               </div>
 
               {/* CONFIGURAÇÕES */}
               <div className="pt-4">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">⚙️ CONFIGURAÇÕES</h4>
+                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Configurações</h4>
                 <div className="space-y-1">
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <User className="h-4 w-4" />
-                    <span>👤 Perfil</span>
+                    <span>Perfil</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Bell className="h-4 w-4" />
-                    <span>🔔 Notificações</span>
+                    <span>Notificações</span>
                   </button>
                   <button className="w-full flex items-center space-x-3 px-3 py-2 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors">
                     <Lock className="h-4 w-4" />
-                    <span>🔒 Segurança</span>
+                    <span>Segurança</span>
                   </button>
                 </div>
               </div>
