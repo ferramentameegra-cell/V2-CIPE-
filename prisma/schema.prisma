@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------------------------------------
+// ENUMS
+// ---------------------------------------------------
+
+enum UserType {
+  SUPER_ADMIN
+  ADMIN
+  CANDIDATE
+  COORDINATOR
+  ANALYST
+  VOLUNTEER
+}
+
+enum AlertType {
+  CRISIS
+  OPPORTUNITY
+  THREAT
+  NEUTRAL
+  INFO
+}
+
+enum AlertSeverity {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+  IN_PROGRESS
+  ARCHIVED
+}
+
+enum InteractionType {
+  CALL
+  EMAIL
+  MEETING
+  WHATSAPP
+  SOCIAL_MEDIA
+  EVENT
+}
+
+enum ElectorTier {
+  A_PLUS // Embaixador
+  A      // Apoiador Fiel
+  B      // Simpatizante
+  C      // Neutro / Indeciso
+  D      // Opositor
+}
+
+// ---------------------------------------------------
+// CORE MODELS
+// ---------------------------------------------------
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  name          String
+  password      String
+  userType      UserType    @default(VOLUNTEER)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  candidateId   String?
+  candidate     Candidate?  @relation(fields: [candidateId], references: [id])
+  auditLogs     AuditLog[]
+  assignedAlerts Alert[]
+}
+
+model Candidate {
+  id          String    @id @default(cuid())
+  name        String
+  party       String
+  electoralId String    @unique // Número do candidato (e.g., 1014)
+  state       String    // Estado (e.g., RS)
+  office      String    // Cargo (e.g., Deputado Federal)
+  bio         String?
+  avatarUrl   String?
+  users       User[]
+  electors    Elector[]
+  alerts      Alert[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Elector {
+  id              String          @id @default(cuid())
+  name            String
+  email           String?         @unique
+  phone           String?         @unique
+  city            String
+  state           String
+  zipCode         String?
+  tier            ElectorTier     @default(C)
+  score           Int             @default(50)
+  interests       String[]
+  notes           String?
+  candidateId     String
+  candidate       Candidate       @relation(fields: [candidateId], references: [id])
+  interactions    Interaction[]
+  tags            Tag[]           @relation("ElectorTags")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  color     String    @default("#71717A")
+  electors  Elector[] @relation("ElectorTags")
+}
+
+model Interaction {
+  id          String          @id @default(cuid())
+  electorId   String
+  elector     Elector         @relation(fields: [electorId], references: [id])
+  type        InteractionType
+  content     String
+  date        DateTime        @default(now())
+  responsible String // Nome do membro da equipe
+}
+
+// ---------------------------------------------------
+// WAR ROOM & INTELLIGENCE MODELS
+// ---------------------------------------------------
+
+model Alert {
+  id            String        @id @default(cuid())
+  title         String
+  description   String
+  type          AlertType
+  severity      AlertSeverity
+  status        AlertStatus   @default(ACTIVE)
+  source        String        // e.g., Twitter, WhatsApp, News
+  reach         Int           @default(0)
+  engagement    Float         @default(0)
+  sentiment     Float         @default(0) // -1 (neg) to 1 (pos)
+  velocity      Float         @default(0) // mentions per hour
+  tags          String[]
+  assignedToId  String?
+  assignedTo    User?         @relation(fields: [assignedToId], references: [id])
+  candidateId   String
+  candidate     Candidate     @relation(fields: [candidateId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// ---------------------------------------------------
+// AUDIT & LOGGING
+// ---------------------------------------------------
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // e.g., LOGIN, CREATE_ELECTOR, UPDATE_ALERT
+  details   Json?
+  createdAt DateTime @default(now())
+}
