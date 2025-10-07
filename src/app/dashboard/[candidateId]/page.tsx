@@ -13,7 +13,7 @@ import {
   Globe, TrendingUpIcon, DollarSign, Clock, User, Bell, Lock, Zap, Compass,
   Megaphone, Bot, LayoutDashboard, UserCog, LineChart, Mail, GlobeIcon,
   FileText, Wallet, CalendarDays, Settings2, BellRing, ShieldCheck,
-  UserPlus, BarChart, PieChart, GitFork, Lightbulb, MessageCircle,
+  UserPlus, BarChart, GitFork, Lightbulb, MessageCircle,
   UserRound, Network, TargetIcon, AlertCircle, MapPin, Users2,
   Handshake, Share2, BarChart2, DollarSignIcon, CalendarIcon
 } from 'lucide-react';
@@ -94,9 +94,9 @@ export default function DashboardPage({ params }: DashboardProps) {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="glass-card">
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-slate-400">Intenção de Voto</p>
@@ -331,7 +331,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('visao-geral')}
+                    onClick={(e) => { e.preventDefault(); setActiveModule('visao-geral'); }}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
                       activeModule === 'visao-geral' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
@@ -349,7 +349,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('sala-de-guerra')}
+                    onClick={(e) => { e.preventDefault(); setActiveModule('sala-de-guerra'); }}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
                       activeModule === 'sala-de-guerra' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
@@ -361,7 +361,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('waze-eleitoral')}
+                    onClick={(e) => { e.preventDefault(); setActiveModule('waze-eleitoral'); }}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
                       activeModule === 'waze-eleitoral' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
@@ -385,9 +385,9 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('funil-mobilizacao')}
+                    onClick={(e) => { e.preventDefault(); setActiveModule('funil-mobilizacao'); }}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'funil-mobilizacao' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
+                      activeModule === 'funil-mobilizacao' ? 'bg-blue-600/30 text-blue-300' : 'text-white hover:bg-slate-700/50'
                     }`}
                   >
                     <GitFork className="h-5 w-5 mr-3" />
@@ -493,7 +493,7 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('crm-eleitoral')}
+                    onClick={(e) => { e.preventDefault(); setActiveModule('crm-eleitoral'); }}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
                       activeModule === 'crm-eleitoral' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
@@ -743,7 +743,7 @@ export default function DashboardPage({ params }: DashboardProps) {
           </div>
         </header>
 
-        <main className="main-content p-6">
+        <main className="main-content p-6 module-container">
           {renderContent()}
         </main>
       </div>

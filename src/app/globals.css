@@ -7,6 +7,7 @@
   --primary-blue: #0066FF;
   --primary-purple: #6366F1;
   --primary-cyan: #06B6D4;
+  --primary-green: #10B981;
   
   /* Backgrounds Dark Mode */
   --bg-primary: #0A0A0F;
@@ -32,11 +33,30 @@
   --text-muted: #94A3B8;
   --text-disabled: #64748B;
   
+  /* Gradientes Oracle CIPE */
+  --gradient-primary: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  --gradient-blue: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+  --gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  --gradient-cyan: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+  --gradient-text: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #06B6D4 100%);
+  
+  /* Sombras sofisticadas */
+  --shadow-blue: 0 4px 20px rgba(59, 130, 246, 0.15);
+  --shadow-purple: 0 4px 20px rgba(139, 92, 246, 0.15);
+  --shadow-cyan: 0 4px 20px rgba(6, 182, 212, 0.15);
+  --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.2);
+  
   /* Gradientes */
   --gradient-primary: linear-gradient(135deg, #0066FF 0%, #6366F1 50%, #06B6D4 100%);
   --gradient-card: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
   --gradient-header: linear-gradient(90deg, rgba(10, 10, 15, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
   --gradient-sidebar: linear-gradient(180deg, rgba(10, 10, 15, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Efeitos Glassmorphism */
@@ -57,6 +77,40 @@
     0 12px 40px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(0, 102, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Classes Oracle CIPE */
+.oracle-gradient {
+  background: var(--gradient-primary);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  box-shadow: var(--shadow-blue);
+}
+
+.oracle-gradient:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.oracle-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.oracle-blue {
+  background: var(--gradient-blue);
+}
+
+.oracle-purple {
+  background: var(--gradient-purple);
+}
+
+.oracle-cyan {
+  background: var(--gradient-cyan);
 }
 
 /* Efeitos Neon */
@@ -86,6 +140,7 @@
 /* Layout Principal */
 .main-container {
   min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-areas: 
     "sidebar header"
@@ -93,6 +148,8 @@
   grid-template-columns: 280px 1fr;
   grid-template-rows: 80px 1fr;
   background: var(--bg-primary);
+  overflow: hidden;
+  position: relative;
 }
 
 .sidebar {
@@ -101,6 +158,8 @@
   backdrop-filter: blur(10px);
   border-right: 1px solid var(--glass-border);
   overflow-y: auto;
+  height: 100vh;
+  max-height: 100vh;
 }
 
 .header {
@@ -116,8 +175,12 @@
 
 .main-content {
   grid-area: main;
-  padding: 24px;
+  padding: 0;
   overflow-y: auto;
+  height: calc(100vh - 80px);
+  max-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Responsividade */
@@ -158,4 +221,114 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-purple);
+}
+
+/* Garantir que o conteúdo principal tenha altura adequada */
+.min-h-full {
+  min-height: 100%;
+}
+
+.main-content .min-h-full {
+  min-height: calc(100vh - 140px);
+}
+
+/* Forçar os módulos a ocuparem toda a altura disponível */
+.main-content {
+  height: 100vh !important;
+  min-height: 100vh !important;
+}
+
+.main-content > * {
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+/* Layout otimizado para evitar cortes */
+.main-content {
+  overflow-y: auto !important;
+  height: calc(100vh - 80px) !important;
+  max-height: calc(100vh - 80px) !important;
+}
+
+.main-content > div {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.main-content > div > * {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Garantir que o conteúdo não seja cortado */
+.module-container {
+  min-height: auto;
+  height: auto;
+  overflow: visible;
+  padding-bottom: 2rem;
+}
+
+/* Scrollbar personalizada para manter o visual */
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 3px;
+  border: 1px solid var(--bg-secondary);
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-blue);
+}
+
+/* Garantir que os cards ocupem o espaço disponível */
+.glass-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animações para Oracle CIPE */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Efeito de pulso para elementos ativos */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.glass-card > div {
+  flex: 1;
 }
