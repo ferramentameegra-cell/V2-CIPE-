@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+// import { Textarea } from '@/components/ui/textarea';
 import { 
   Megaphone, Send, Users, Target, BarChart3, Clock, 
   CheckCircle, AlertTriangle, TrendingUp, MessageSquare,
@@ -304,7 +304,7 @@ const ComunicacaoMassa = ({ eleitorId }: ComunicacaoMassaProps) => {
             
             <div>
               <label className="text-white text-sm font-medium">Mensagem</label>
-              <Textarea
+              <textarea
                 placeholder="Digite a mensagem da campanha..."
                 value={novaCampanha.mensagem}
                 onChange={(e) => setNovaCampanha(prev => ({ ...prev, mensagem: e.target.value }))}

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+// import { Textarea } from '@/components/ui/textarea';
 import { 
   Bot, MessageSquare, Send, Brain, Clock, CheckCircle, 
   AlertTriangle, TrendingUp, Users, Target
@@ -202,7 +202,7 @@ const CloneDigital = ({ eleitorId }: CloneDigitalProps) => {
         <CardContent>
           <div className="space-y-4">
             <div className="flex space-x-4">
-              <Textarea
+              <textarea
                 placeholder="Digite uma mensagem para testar o Clone Digital..."
                 value={novaMensagem}
                 onChange={(e) => setNovaMensagem(e.target.value)}

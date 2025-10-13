@@ -1,0 +1,734 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Shield, AlertTriangle, Eye, Zap, Target, Activity,
+  TrendingUp, TrendingDown, Clock, Users, Lock, Unlock,
+  CheckCircle, XCircle, AlertCircle, ShieldCheck, ShieldAlert,
+  Radar, Crosshair, Siren, FileText, BarChart3
+} from 'lucide-react';
+
+interface AmeacaDetectada {
+  id: string;
+  titulo: string;
+  descricao: string;
+  tipo: 'FAKE_NEWS' | 'ATAQUE_PESSOAL' | 'DESINFORMACAO' | 'CALÚNIA_DIFAMACAO' | 'ATAQUE_COORDENADO';
+  severidade: 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA' | 'EMERGENCIA';
+  status: 'DETECTADA' | 'EM_ANALISE' | 'CONFIRMADA' | 'EM_RESPOSTA' | 'NEUTRALIZADA';
+  fonte: string;
+  alcanceEstimado: number;
+  nivelCredibilidade: number;
+  potencialViral: number;
+  impactoEstimado: number;
+  urgenciaResposta: number;
+  dataDeteccao: Date;
+  prazoResposta?: Date;
+  isFakeNews: boolean;
+  isAtaqueOrganizado: boolean;
+  isBotsDetectados: boolean;
+}
+
+interface Vulnerabilidade {
+  id: string;
+  categoria: string;
+  titulo: string;
+  descricao: string;
+  nivelRisco: 'MUITO_BAIXO' | 'BAIXO' | 'MEDIO' | 'ALTO' | 'MUITO_ALTO' | 'CRITICO';
+  status: 'IDENTIFICADA' | 'EM_AVALIACAO' | 'CONFIRMADA' | 'EM_MITIGACAO' | 'MITIGADA';
+  probabilidadeExposicao: number;
+  impactoPotencial: number;
+  areaAfetada: string;
+  dataIdentificacao: Date;
+}
+
+interface MetricaBlindagem {
+  label: string;
+  valor: number | string;
+  variacao?: number;
+  tipo: 'protecao' | 'ameaca' | 'neutro' | 'alerta';
+  icone: any;
+  status: 'seguro' | 'atencao' | 'critico';
+}
+
+interface StatusSeguranca {
+  nivel: 'SEGURO' | 'ATENCAO' | 'ALERTA' | 'CRITICO';
+  pontuacao: number;
+  ameacasAtivas: number;
+  vulnerabilidadesAbertas: number;
+  contramedidas: number;
+  ultimaAtualizacao: Date;
+}
+
+export default function BlindagemEstrategica({ candidateId }: { candidateId: string }) {
+  const [ameacas, setAmeacas] = useState<AmeacaDetectada[]>([]);
+  const [vulnerabilidades, setVulnerabilidades] = useState<Vulnerabilidade[]>([]);
+  const [metricas, setMetricas] = useState<MetricaBlindagem[]>([]);
+  const [statusSeguranca, setStatusSeguranca] = useState<StatusSeguranca | null>(null);
+  const [filtroTempo, setFiltroTempo] = useState('24h');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulação de dados
+    const ameacasSimuladas: AmeacaDetectada[] = [
+      {
+        id: '1',
+        titulo: 'Fake News sobre Proposta Econômica',
+        descricao: 'Informação falsa circulando sobre aumento de impostos que não consta no plano de governo',
+        tipo: 'FAKE_NEWS',
+        severidade: 'ALTA',
+        status: 'EM_RESPOSTA',
+        fonte: 'WhatsApp',
+        alcanceEstimado: 25000,
+        nivelCredibilidade: 0.2,
+        potencialViral: 0.8,
+        impactoEstimado: -35,
+        urgenciaResposta: 8,
+        dataDeteccao: new Date(Date.now() - 2 * 60 * 60 * 1000),
+        prazoResposta: new Date(Date.now() + 2 * 60 * 60 * 1000),
+        isFakeNews: true,
+        isAtaqueOrganizado: true,
+        isBotsDetectados: false
+      },
+      {
+        id: '2',
+        titulo: 'Ataque Coordenado no Twitter',
+        descricao: 'Múltiplos perfis atacando simultaneamente com hashtag negativa',
+        tipo: 'ATAQUE_COORDENADO',
+        severidade: 'CRITICA',
+        status: 'DETECTADA',
+        fonte: 'Twitter',
+        alcanceEstimado: 45000,
+        nivelCredibilidade: 0.3,
+        potencialViral: 0.9,
+        impactoEstimado: -50,
+        urgenciaResposta: 9,
+        dataDeteccao: new Date(Date.now() - 30 * 60 * 1000),
+        prazoResposta: new Date(Date.now() + 60 * 60 * 1000),
+        isFakeNews: false,
+        isAtaqueOrganizado: true,
+        isBotsDetectados: true
+      },
+      {
+        id: '3',
+        titulo: 'Desinformação sobre Histórico',
+        descricao: 'Informações distorcidas sobre período como prefeito sendo compartilhadas',
+        tipo: 'DESINFORMACAO',
+        severidade: 'MEDIA',
+        status: 'NEUTRALIZADA',
+        fonte: 'Facebook',
+        alcanceEstimado: 12000,
+        nivelCredibilidade: 0.4,
+        potencialViral: 0.5,
+        impactoEstimado: -15,
+        urgenciaResposta: 5,
+        dataDeteccao: new Date(Date.now() - 6 * 60 * 60 * 1000),
+        isFakeNews: true,
+        isAtaqueOrganizado: false,
+        isBotsDetectados: false
+      }
+    ];
+
+    const vulnerabilidadesSimuladas: Vulnerabilidade[] = [
+      {
+        id: '1',
+        categoria: 'HISTORICO_PROFISSIONAL',
+        titulo: 'Período como Diretor da Empresa X',
+        descricao: 'Possível exploração de decisões controversas durante gestão empresarial',
+        nivelRisco: 'ALTO',
+        status: 'EM_MITIGACAO',
+        probabilidadeExposicao: 0.7,
+        impactoPotencial: -40,
+        areaAfetada: 'Credibilidade Empresarial',
+        dataIdentificacao: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      },
+      {
+        id: '2',
+        categoria: 'PROPOSTAS_CAMPANHA',
+        titulo: 'Detalhamento Orçamentário Incompleto',
+        descricao: 'Falta de especificação de fontes de financiamento para algumas propostas',
+        nivelRisco: 'MEDIO',
+        status: 'IDENTIFICADA',
+        probabilidadeExposicao: 0.5,
+        impactoPotencial: -25,
+        areaAfetada: 'Viabilidade Econômica',
+        dataIdentificacao: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+      },
+      {
+        id: '3',
+        categoria: 'VIDA_DIGITAL',
+        titulo: 'Posts Antigos em Redes Sociais',
+        descricao: 'Publicações antigas que podem ser tiradas de contexto',
+        nivelRisco: 'BAIXO',
+        status: 'MITIGADA',
+        probabilidadeExposicao: 0.3,
+        impactoPotencial: -10,
+        areaAfetada: 'Consistência Discursiva',
+        dataIdentificacao: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+      }
+    ];
+
+    const metricasSimuladas: MetricaBlindagem[] = [
+      {
+        label: 'Nível de Proteção',
+        valor: '87%',
+        variacao: 5,
+        tipo: 'protecao',
+        icone: Shield,
+        status: 'seguro'
+      },
+      {
+        label: 'Ameaças Ativas',
+        valor: ameacasSimuladas.filter(a => ['DETECTADA', 'EM_ANALISE', 'CONFIRMADA', 'EM_RESPOSTA'].includes(a.status)).length,
+        variacao: -2,
+        tipo: 'ameaca',
+        icone: AlertTriangle,
+        status: 'atencao'
+      },
+      {
+        label: 'Vulnerabilidades',
+        valor: vulnerabilidadesSimuladas.filter(v => v.status !== 'MITIGADA').length,
+        tipo: 'alerta',
+        icone: Unlock,
+        status: 'atencao'
+      },
+      {
+        label: 'Fake News Detectadas',
+        valor: ameacasSimuladas.filter(a => a.isFakeNews).length,
+        variacao: 1,
+        tipo: 'ameaca',
+        icone: Eye,
+        status: 'critico'
+      },
+      {
+        label: 'Ataques Organizados',
+        valor: ameacasSimuladas.filter(a => a.isAtaqueOrganizado).length,
+        tipo: 'ameaca',
+        icone: Target,
+        status: 'critico'
+      },
+      {
+        label: 'Tempo Médio Resposta',
+        valor: '18min',
+        variacao: -12,
+        tipo: 'protecao',
+        icone: Clock,
+        status: 'seguro'
+      }
+    ];
+
+    const statusSegurancaSimulado: StatusSeguranca = {
+      nivel: 'ATENCAO',
+      pontuacao: 73,
+      ameacasAtivas: ameacasSimuladas.filter(a => ['DETECTADA', 'EM_ANALISE', 'CONFIRMADA', 'EM_RESPOSTA'].includes(a.status)).length,
+      vulnerabilidadesAbertas: vulnerabilidadesSimuladas.filter(v => v.status !== 'MITIGADA').length,
+      contramedidas: 8,
+      ultimaAtualizacao: new Date()
+    };
+
+    setAmeacas(ameacasSimuladas);
+    setVulnerabilidades(vulnerabilidadesSimuladas);
+    setMetricas(metricasSimuladas);
+    setStatusSeguranca(statusSegurancaSimulado);
+    setLoading(false);
+  }, [candidateId]);
+
+  const getSeveridadeColor = (severidade: string) => {
+    switch (severidade) {
+      case 'BAIXA': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'MEDIA': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'ALTA': return 'bg-orange-500/20 text-orange-300 border-orange-500/30';
+      case 'CRITICA': return 'bg-red-500/20 text-red-300 border-red-500/30';
+      case 'EMERGENCIA': return 'bg-red-600/30 text-red-200 border-red-600/50 animate-pulse';
+      default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+    }
+  };
+
+  const getRiscoColor = (risco: string) => {
+    switch (risco) {
+      case 'MUITO_BAIXO': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'BAIXO': return 'bg-green-400/20 text-green-300 border-green-400/30';
+      case 'MEDIO': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'ALTO': return 'bg-orange-500/20 text-orange-300 border-orange-500/30';
+      case 'MUITO_ALTO': return 'bg-red-500/20 text-red-300 border-red-500/30';
+      case 'CRITICO': return 'bg-red-600/30 text-red-200 border-red-600/50 animate-pulse';
+      default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'DETECTADA': case 'IDENTIFICADA': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'EM_ANALISE': case 'EM_AVALIACAO': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'CONFIRMADA': return 'bg-orange-500/20 text-orange-300 border-orange-500/30';
+      case 'EM_RESPOSTA': case 'EM_MITIGACAO': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+      case 'NEUTRALIZADA': case 'MITIGADA': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+    }
+  };
+
+  const getStatusSegurancaStyle = () => {
+    if (!statusSeguranca) return '';
+    
+    switch (statusSeguranca.nivel) {
+      case 'SEGURO': return 'border-green-500/30 bg-green-500/5';
+      case 'ATENCAO': return 'border-yellow-500/30 bg-yellow-500/5';
+      case 'ALERTA': return 'border-orange-500/30 bg-orange-500/5';
+      case 'CRITICO': return 'border-red-500/30 bg-red-500/5 animate-pulse';
+      default: return '';
+    }
+  };
+
+  const getStatusSegurancaIcon = () => {
+    if (!statusSeguranca) return Shield;
+    
+    switch (statusSeguranca.nivel) {
+      case 'SEGURO': return ShieldCheck;
+      case 'ATENCAO': return Shield;
+      case 'ALERTA': return ShieldAlert;
+      case 'CRITICO': return Siren;
+      default: return Shield;
+    }
+  };
+
+  const formatTempo = (data: Date) => {
+    const agora = new Date();
+    const diff = agora.getTime() - data.getTime();
+    const minutos = Math.floor(diff / (1000 * 60));
+    
+    if (minutos < 1) return 'Agora';
+    if (minutos < 60) return `${minutos}min atrás`;
+    const horas = Math.floor(minutos / 60);
+    if (horas < 24) return `${horas}h atrás`;
+    const dias = Math.floor(horas / 24);
+    return `${dias}d atrás`;
+  };
+
+  const formatPrazo = (data?: Date) => {
+    if (!data) return null;
+    const agora = new Date();
+    const diff = data.getTime() - agora.getTime();
+    const minutos = Math.floor(diff / (1000 * 60));
+    
+    if (minutos < 0) return <span className="text-red-400">Atrasado</span>;
+    if (minutos < 60) return <span className="text-yellow-400">{minutos}min restantes</span>;
+    const horas = Math.floor(minutos / 60);
+    return <span className="text-green-400">{horas}h restantes</span>;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="text-white mt-4">Carregando Blindagem Estratégica...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const StatusIcon = statusSeguranca ? getStatusSegurancaIcon() : Shield;
+
+  return (
+    <div className="space-y-4 fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-2xl font-bold text-white">Blindagem Estratégica</h1>
+            {statusSeguranca && (
+              <div className={`px-3 py-1 rounded-lg border ${getStatusSegurancaStyle()}`}>
+                <div className="flex items-center space-x-2">
+                  <StatusIcon className={`w-4 h-4 ${
+                    statusSeguranca.nivel === 'SEGURO' ? 'text-green-400' :
+                    statusSeguranca.nivel === 'ATENCAO' ? 'text-yellow-400' :
+                    statusSeguranca.nivel === 'ALERTA' ? 'text-orange-400' : 'text-red-400'
+                  }`} />
+                  <span className="text-sm font-medium text-white">NÍVEL {statusSeguranca.nivel}</span>
+                  <span className="text-xs text-slate-300">({statusSeguranca.pontuacao}/100)</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <p className="text-sm text-slate-400 mt-1">
+            Sistema de proteção digital • Última atualização: {statusSeguranca?.ultimaAtualizacao.toLocaleTimeString()}
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <select
+            className="px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+            value={filtroTempo}
+            onChange={(e) => setFiltroTempo(e.target.value)}
+          >
+            <option value="1h">Última hora</option>
+            <option value="24h">Últimas 24h</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="30d">Últimos 30 dias</option>
+          </select>
+          
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+            <Radar className="w-4 h-4 mr-2" />
+            Scan
+          </Button>
+          
+          <Button size="sm" variant="outline">
+            <FileText className="w-4 h-4 mr-2" />
+            Relatório
+          </Button>
+        </div>
+      </div>
+
+      {/* Métricas */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {metricas.map((metrica, index) => {
+          const Icon = metrica.icone;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <Card className={`glass-card ${
+                metrica.status === 'critico' ? 'border-red-500/30 bg-red-500/5' :
+                metrica.status === 'atencao' ? 'border-yellow-500/30 bg-yellow-500/5' :
+                'border-green-500/30 bg-green-500/5'
+              }`}>
+                <CardContent className="p-3 text-center">
+                  <Icon className={`w-4 h-4 mx-auto mb-1 ${
+                    metrica.status === 'critico' ? 'text-red-400' :
+                    metrica.status === 'atencao' ? 'text-yellow-400' :
+                    'text-green-400'
+                  }`} />
+                  <div className="text-xl font-bold text-white mb-0.5">{metrica.valor}</div>
+                  <div className="text-xs text-slate-400 mb-0.5">{metrica.label}</div>
+                  {metrica.variacao && (
+                    <div className={`text-xs flex items-center justify-center ${
+                      metrica.variacao > 0 ? 'text-red-400' : 'text-green-400'
+                    }`}>
+                      {metrica.variacao > 0 ? <TrendingUp className="w-3 h-3 mr-0.5" /> : <TrendingDown className="w-3 h-3 mr-0.5" />}
+                      {Math.abs(metrica.variacao)}%
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Dashboard Principal - Todo Conteúdo Visível */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Ameaças Críticas */}
+            <Card className="glass-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center justify-between text-base">
+                  <div className="flex items-center space-x-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                    <span>Ameaças Críticas</span>
+                  </div>
+                  <Badge variant="outline" className="text-red-400 border-red-400 text-xs">
+                    {ameacas.filter(a => a.severidade === 'CRITICA' || a.severidade === 'EMERGENCIA').length}
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 max-h-80 overflow-y-auto">
+                {ameacas
+                  .filter(a => a.severidade === 'CRITICA' || a.severidade === 'EMERGENCIA')
+                  .map((ameaca, index) => (
+                    <div key={ameaca.id} className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-white text-sm">{ameaca.titulo}</h4>
+                          <p className="text-xs text-slate-400 mt-1">{ameaca.descricao}</p>
+                        </div>
+                        <div className={`w-2 h-2 rounded-full ${
+                          ameaca.urgenciaResposta >= 8 ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
+                        }`} />
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        <Badge className={getSeveridadeColor(ameaca.severidade)} variant="outline">
+                          {ameaca.severidade}
+                        </Badge>
+                        <Badge className={getStatusColor(ameaca.status)} variant="outline">
+                          {ameaca.status.replace('_', ' ')}
+                        </Badge>
+                        {ameaca.isFakeNews && (
+                          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs" variant="outline">
+                            FAKE NEWS
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+                        <span>{ameaca.fonte}</span>
+                        <span>{formatTempo(ameaca.dataDeteccao)}</span>
+                      </div>
+                      
+                      <div className="flex space-x-2">
+                        <Button size="sm" className="h-6 text-xs bg-red-600 hover:bg-red-700">
+                          Responder
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-6 text-xs">
+                          Analisar
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                
+                {ameacas.filter(a => a.severidade === 'CRITICA' || a.severidade === 'EMERGENCIA').length === 0 && (
+                  <div className="text-center py-6 text-slate-400">
+                    <ShieldCheck className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Nenhuma ameaça crítica</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Vulnerabilidades */}
+            <Card className="glass-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center justify-between text-base">
+                  <div className="flex items-center space-x-2">
+                    <Unlock className="w-4 h-4 text-orange-400" />
+                    <span>Vulnerabilidades</span>
+                  </div>
+                  <Badge variant="outline" className="text-orange-400 border-orange-400 text-xs">
+                    {vulnerabilidades.filter(v => ['ALTO', 'MUITO_ALTO', 'CRITICO'].includes(v.nivelRisco)).length}
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 max-h-80 overflow-y-auto">
+                {vulnerabilidades
+                  .filter(v => ['ALTO', 'MUITO_ALTO', 'CRITICO'].includes(v.nivelRisco))
+                  .map((vuln) => (
+                    <div key={vuln.id} className="p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-white text-sm">{vuln.titulo}</h4>
+                          <p className="text-xs text-slate-400 mt-1">{vuln.descricao}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        <Badge className={getRiscoColor(vuln.nivelRisco)} variant="outline">
+                          {vuln.nivelRisco.replace('_', ' ')}
+                        </Badge>
+                        <Badge className={getStatusColor(vuln.status)} variant="outline">
+                          {vuln.status.replace('_', ' ')}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-1 mb-2">
+                        <div>
+                          <div className="flex justify-between text-xs text-slate-400 mb-0.5">
+                            <span>Prob. Exposição</span>
+                            <span>{Math.round(vuln.probabilidadeExposicao * 100)}%</span>
+                          </div>
+                          <div className="w-full bg-slate-700 rounded-full h-1">
+                            <div 
+                              className="bg-orange-500 h-1 rounded-full"
+                              style={{ width: `${vuln.probabilidadeExposicao * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex space-x-2">
+                        <Button size="sm" className="h-6 text-xs bg-orange-600 hover:bg-orange-700">
+                          Mitigar
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-6 text-xs">
+                          Plano
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Escudo Digital */}
+          <Card className="glass-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center space-x-2 text-base">
+                <Shield className="w-4 h-4 text-blue-400" />
+                <span>Escudo Digital</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="relative w-20 h-20 mx-auto mb-2">
+                    <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="40" stroke="#374151" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="50" cy="50" r="40" stroke="#22C55E" strokeWidth="8" fill="none"
+                        strokeDasharray={`${(statusSeguranca?.pontuacao || 0) * 2.51} 251`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xl font-bold text-white">{statusSeguranca?.pontuacao}%</span>
+                    </div>
+                  </div>
+                  <h4 className="font-medium text-white text-sm">Nível de Proteção</h4>
+                  <p className="text-xs text-slate-400">Segurança Geral</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <CheckCircle className="w-7 h-7 text-green-400" />
+                  </div>
+                  <div className="text-xl font-bold text-green-400">
+                    {ameacas.filter(a => a.status === 'NEUTRALIZADA').length}
+                  </div>
+                  <h4 className="font-medium text-white text-sm">Neutralizadas</h4>
+                  <p className="text-xs text-slate-400">Últimas 24h</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-14 h-14 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Radar className="w-7 h-7 text-blue-400" />
+                  </div>
+                  <div className="text-xl font-bold text-blue-400">24/7</div>
+                  <h4 className="font-medium text-white text-sm">Monitoramento</h4>
+                  <p className="text-xs text-slate-400">Tempo Real</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-14 h-14 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Zap className="w-7 h-7 text-purple-400" />
+                  </div>
+                  <div className="text-xl font-bold text-purple-400">18min</div>
+                  <h4 className="font-medium text-white text-sm">Tempo Resposta</h4>
+                  <p className="text-xs text-slate-400">Média</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Todas as Ameaças Ativas */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span>Todas as Ameaças Ativas</span>
+            <Badge variant="outline" className="text-red-400 border-red-400">
+              {ameacas.filter(a => ['DETECTADA', 'EM_ANALISE', 'CONFIRMADA', 'EM_RESPOSTA'].includes(a.status)).length} Ativas
+            </Badge>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {ameacas
+              .filter(a => ['DETECTADA', 'EM_ANALISE', 'CONFIRMADA', 'EM_RESPOSTA'].includes(a.status))
+              .map((ameaca, index) => (
+                <Card key={ameaca.id} className="glass-card">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="font-medium text-white text-sm">{ameaca.titulo}</h3>
+                      <div className={`w-2 h-2 rounded-full ${
+                        ameaca.urgenciaResposta >= 8 ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
+                      }`} />
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <Badge className={getSeveridadeColor(ameaca.severidade)} variant="outline">
+                        {ameaca.severidade}
+                      </Badge>
+                      <Badge className={getStatusColor(ameaca.status)} variant="outline">
+                        {ameaca.status.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <div className="text-center">
+                        <div className="text-base font-bold text-orange-400">
+                          {(ameaca.alcanceEstimado / 1000).toFixed(0)}K
+                        </div>
+                        <div className="text-xs text-slate-400">Alcance</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-base font-bold text-red-400">
+                          {ameaca.impactoEstimado}%
+                        </div>
+                        <div className="text-xs text-slate-400">Impacto</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <Button size="sm" className="flex-1 h-7 text-xs bg-red-600 hover:bg-red-700">
+                        Responder
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs">
+                        <Eye className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
+        </div>
+
+        {/* Todas as Vulnerabilidades */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
+            <Unlock className="w-5 h-5 text-orange-400" />
+            <span>Todas as Vulnerabilidades</span>
+            <Badge variant="outline" className="text-orange-400 border-orange-400">
+              {vulnerabilidades.length} Total
+            </Badge>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {vulnerabilidades.map((vuln) => (
+              <Card key={vuln.id} className="glass-card">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="font-medium text-white text-sm">{vuln.titulo}</h3>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    <Badge className={getRiscoColor(vuln.nivelRisco)} variant="outline">
+                      {vuln.nivelRisco.replace('_', ' ')}
+                    </Badge>
+                    <Badge className={getStatusColor(vuln.status)} variant="outline">
+                      {vuln.status.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="text-center">
+                      <div className="text-base font-bold text-orange-400">
+                        {Math.round(vuln.probabilidadeExposicao * 100)}%
+                      </div>
+                      <div className="text-xs text-slate-400">Prob.</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-base font-bold text-red-400">
+                        {vuln.impactoPotencial}%
+                      </div>
+                      <div className="text-xs text-slate-400">Impacto</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Button size="sm" className="flex-1 h-7 text-xs bg-orange-600 hover:bg-orange-700">
+                      Mitigar
+                    </Button>
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
+                      <BarChart3 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+    </div>
+  );
+}

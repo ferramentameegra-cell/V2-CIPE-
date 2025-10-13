@@ -141,44 +141,50 @@
 .main-container {
   min-height: 100vh;
   height: 100vh;
-  display: grid;
-  grid-template-areas: 
-    "sidebar header"
-    "sidebar main";
-  grid-template-columns: 280px 1fr;
-  grid-template-rows: 80px 1fr;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-primary);
   overflow: hidden;
   position: relative;
 }
 
 .sidebar {
-  grid-area: sidebar;
   background: var(--gradient-sidebar);
   backdrop-filter: blur(10px);
   border-right: 1px solid var(--glass-border);
   overflow-y: auto;
-  height: 100vh;
-  max-height: 100vh;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+/* Container para sidebar + main content */
+.content-container {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 .header {
-  grid-area: header;
-  background: var(--gradient-header);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 50%, rgba(15, 23, 42, 0.95) 100%);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
+  height: 80px;
+  flex-shrink: 0;
 }
 
 .main-content {
-  grid-area: main;
   padding: 0;
   overflow-y: auto;
-  height: calc(100vh - 80px);
-  max-height: calc(100vh - 80px);
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -232,22 +238,12 @@
   min-height: calc(100vh - 140px);
 }
 
-/* Forçar os módulos a ocuparem toda a altura disponível */
-.main-content {
-  height: 100vh !important;
-  min-height: 100vh !important;
-}
-
-.main-content > * {
-  height: 100% !important;
-  min-height: 100% !important;
-}
-
 /* Layout otimizado para evitar cortes */
 .main-content {
   overflow-y: auto !important;
-  height: calc(100vh - 80px) !important;
-  max-height: calc(100vh - 80px) !important;
+  height: calc(100vh - 144px) !important;
+  max-height: calc(100vh - 144px) !important;
+  padding-bottom: 0.5rem !important;
 }
 
 .main-content > div {
@@ -255,13 +251,21 @@
   min-height: auto !important;
   max-height: none !important;
   overflow: visible !important;
+  padding-bottom: 0.5rem;
 }
 
-.main-content > div > * {
-  height: auto !important;
-  min-height: auto !important;
+/* Melhorar proporções dos componentes */
+.glass-card {
   max-height: none !important;
-  overflow: visible !important;
+  height: auto !important;
+}
+
+.glass-card .space-y-6 {
+  gap: 1rem !important;
+}
+
+.glass-card .space-y-4 {
+  gap: 0.75rem !important;
 }
 
 /* Garantir que o conteúdo não seja cortado */
@@ -290,6 +294,26 @@
 
 .main-content::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-blue);
+}
+
+/* Logo CIPE com animação épica */
+@keyframes logoGlow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
+  }
+}
+
+/* Barra de pesquisa épica */
+@keyframes searchGlow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+  }
 }
 
 /* Garantir que os cards ocupem o espaço disponível */
@@ -331,4 +355,223 @@
 
 .glass-card > div {
   flex: 1;
+}
+
+/* ========================================
+   CORREÇÃO DE LEGIBILIDADE - TEXTOS BRANCOS
+   ======================================== */
+
+/* Garantir que TODOS os textos sejam legíveis (brancos/claros) */
+body {
+  color: var(--text-primary) !important;
+}
+
+/* Textos gerais */
+p, span, div, label, input, textarea, select {
+  color: var(--text-secondary) !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+}
+
+/* Links */
+a {
+  color: var(--primary-blue) !important;
+}
+
+a:hover {
+  color: var(--primary-cyan) !important;
+}
+
+/* Textos dentro de cards */
+.glass-card p,
+.glass-card span,
+.glass-card div,
+.glass-card label {
+  color: var(--text-secondary) !important;
+}
+
+.glass-card h1,
+.glass-card h2,
+.glass-card h3,
+.glass-card h4,
+.glass-card h5,
+.glass-card h6 {
+  color: var(--text-primary) !important;
+}
+
+/* Textos de descrição/secundários */
+.text-slate-400,
+.text-slate-500,
+.text-slate-600,
+.text-gray-400,
+.text-gray-500,
+.text-gray-600 {
+  color: var(--text-muted) !important;
+}
+
+/* Textos primários */
+.text-white,
+.text-slate-100,
+.text-slate-200,
+.text-slate-300 {
+  color: var(--text-primary) !important;
+}
+
+/* Botões */
+button {
+  color: var(--text-primary) !important;
+}
+
+/* Inputs e forms */
+input,
+textarea,
+select {
+  color: var(--text-primary) !important;
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Tabelas */
+table,
+th,
+td {
+  color: var(--text-secondary) !important;
+}
+
+th {
+  color: var(--text-primary) !important;
+}
+
+/* Badges e Pills */
+.badge,
+[class*="badge"] {
+  color: var(--text-primary) !important;
+}
+
+/* Listas */
+ul li,
+ol li {
+  color: var(--text-secondary) !important;
+}
+
+/* Sidebar */
+.sidebar * {
+  color: var(--text-secondary) !important;
+}
+
+.sidebar h1,
+.sidebar h2,
+.sidebar h3,
+.sidebar h4,
+.sidebar h5,
+.sidebar h6,
+.sidebar .font-bold,
+.sidebar .font-semibold {
+  color: var(--text-primary) !important;
+}
+
+/* Header */
+.header * {
+  color: var(--text-secondary) !important;
+}
+
+.header h1,
+.header h2,
+.header h3,
+.header .font-bold,
+.header .font-semibold {
+  color: var(--text-primary) !important;
+}
+
+/* Main Content */
+.main-content * {
+  color: var(--text-secondary) !important;
+}
+
+.main-content h1,
+.main-content h2,
+.main-content h3,
+.main-content h4,
+.main-content h5,
+.main-content h6,
+.main-content .font-bold,
+.main-content .font-semibold {
+  color: var(--text-primary) !important;
+}
+
+/* Elementos específicos do dashboard */
+.metric-value,
+.metric-label,
+.card-title,
+.section-title {
+  color: var(--text-primary) !important;
+}
+
+.metric-description,
+.card-description {
+  color: var(--text-muted) !important;
+}
+
+/* Garantir contraste em fundos escuros */
+[class*="bg-slate"],
+[class*="bg-gray"],
+[class*="bg-dark"] {
+  color: var(--text-primary) !important;
+}
+
+/* Remover cores pretas */
+.text-black,
+[style*="color: black"],
+[style*="color: #000"] {
+  color: var(--text-primary) !important;
+}
+
+/* Labels de formulário */
+label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
+/* Mensagens de erro e sucesso */
+.error,
+.success,
+.warning,
+.info {
+  color: var(--text-primary) !important;
+}
+
+/* Tooltips */
+[role="tooltip"],
+.tooltip {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Modals */
+.modal *,
+.dialog * {
+  color: var(--text-secondary) !important;
+}
+
+.modal h1,
+.modal h2,
+.modal h3,
+.dialog h1,
+.dialog h2,
+.dialog h3 {
+  color: var(--text-primary) !important;
+}
+
+/* Garantir que icons mantenham suas cores */
+svg,
+.icon,
+[class*="lucide"] {
+  color: inherit !important;
 }

@@ -1,0 +1,168 @@
+// Schema para Visão Geral Avançada - CIPE v2.0 Mundial
+
+model MetricaPrincipal {
+  id          String   @id @default(cuid())
+  tipo        String   // intencao_voto, sentimento, alcance, engajamento
+  valor       String
+  variacao    String
+  tendencia   String   // up, down, stable
+  meta        String?
+  status      String   // excelente, bom, atencao, critico
+  timestamp   DateTime @default(now())
+  candidatoId String
+  candidato   Candidato @relation(fields: [candidatoId], references: [id])
+
+  @@index([candidatoId])
+  @@index([tipo])
+  @@index([timestamp])
+}
+
+model InsightOracle {
+  id           String   @id @default(cuid())
+  tipo         String   // insight, oportunidade, alerta, recomendacao
+  titulo       String
+  conteudo     String
+  prioridade   String   // baixa, media, alta, critica
+  categoria    String   // estrategia, comunicacao, digital, territorial
+  confianca    Int      // 1-100
+  impacto      Int      // 1-100
+  janelaTempo  String?
+  acaoSugerida String?
+  recursos     Json?    // templates, contatos, links
+  timestamp    DateTime @default(now())
+  candidatoId  String
+  candidato    Candidato @relation(fields: [candidatoId], references: [id])
+
+  @@index([candidatoId])
+  @@index([prioridade])
+  @@index([categoria])
+  @@index([timestamp])
+}
+
+model SimulacaoEstrategica {
+  id          String   @id @default(cuid())
+  nome        String
+  tipo        String   // investimento_midia, evento, campanha_digital, contratacao
+  parametros  Json     // valores de entrada (investimento, duracao, etc)
+  resultados  Json     // projeções calculadas (intencaoVoto, alcance, engajamento, roi)
+  confianca   Int      // 1-100
+  timestamp   DateTime @default(now())
+  candidatoId String
+  candidato   Candidato @relation(fields: [candidatoId], references: [id])
+
+  @@index([candidatoId])
+  @@index([tipo])
+  @@index([timestamp])
+}
+
+model LayoutPersonalizado {
+  id          String   @id @default(cuid())
+  userId      String
+  funcao      String   // coordenador, midia_social, tesoureiro, campo, estrategista
+  layout      Json     // configuração de widgets (visibilidade, posicao, tamanho)
+  timestamp   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, funcao])
+  @@index([userId])
+}
+
+model RegiaoGeografica {
+  id                    String   @id @default(cuid())
+  nome                  String
+  intencaoVoto          Float
+  variacao              Float
+  eleitores             Int
+  status                String   // critico, atencao, bom, excelente
+  coordenadas           Json     // [lat, lon]
+  adversarioPrincipal   String?
+  oportunidade          String?
+  timestamp             DateTime @default(now())
+  candidatoId           String
+  candidato             Candidato @relation(fields: [candidatoId], references: [id])
+
+  @@index([candidatoId])
+  @@index([status])
+  @@index([timestamp])
+}
+
+model ComandoVoz {
+  id          String   @id @default(cuid())
+  comando     String
+  resposta    String
+  confianca   Int      // 1-100
+  categoria   String   // metrica, insight, acao, navegacao
+  timestamp   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([categoria])
+  @@index([timestamp])
+}
+
+model PadraoAdversario {
+  id           String   @id @default(cuid())
+  adversarioId String
+  padrao       String   // comportamento detectado
+  confianca    Int      // 1-100
+  proximaAcao  String?  // predição
+  timestamp    DateTime @default(now())
+  adversario   Adversario @relation(fields: [adversarioId], references: [id])
+
+  @@index([adversarioId])
+  @@index([timestamp])
+}
+
+// Enums para validação
+
+enum TipoMetrica {
+  INTENCAO_VOTO
+  SENTIMENTO
+  ALCANCE
+  ENGAJAMENTO
+}
+
+enum StatusMetrica {
+  EXCELENTE
+  BOM
+  ATENCAO
+  CRITICO
+}
+
+enum TendenciaMetrica {
+  UP
+  DOWN
+  STABLE
+}
+
+enum TipoSimulacao {
+  INVESTIMENTO_MIDIA
+  EVENTO
+  CAMPANHA_DIGITAL
+  CONTRATACAO
+}
+
+enum FuncaoUsuario {
+  COORDENADOR
+  MIDIA_SOCIAL
+  TESOUREIRO
+  CAMPO
+  ESTRATEGISTA
+}
+
+enum CategoriaComando {
+  METRICA
+  INSIGHT
+  ACAO
+  NAVEGACAO
+}
+
+enum StatusRegiao {
+  CRITICO
+  ATENCAO
+  BOM
+  EXCELENTE
+}
+

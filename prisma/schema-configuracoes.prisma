@@ -1,0 +1,437 @@
+// Schema Prisma - Módulo Configurações CIPE
+// Este arquivo contém todos os models necessários para o sistema de configurações
+
+// ==================== CONFIGURAÇÃO DO CANDIDATO ====================
+model ConfiguracaoCandidato {
+  id                String   @id @default(cuid())
+  candidatoId       String   @unique
+  
+  // Dados Pessoais
+  nomeCompleto      String
+  nomeUrna          String
+  apelido           String?
+  cpf               String?
+  rg                String?
+  dataNascimento    DateTime?
+  
+  // Dados Políticos
+  partido           String
+  numeroPartido     Int
+  numeroCandidato   Int?
+  cargo             CargoPolitico
+  coligacao         String?
+  vice              String?
+  
+  // Localização Política
+  pais              String   @default("Brasil")
+  estado            String?
+  cidade            String?
+  zona              String?
+  secao             String?
+  
+  // Contatos
+  telefone          String?
+  email             String?
+  site              String?
+  
+  // Biografia
+  biografia         String?
+  formacao          String?
+  profissao         String?
+  experienciaPolitica String?
+  realizacoes       String[]
+  
+  // Propostas
+  propostaPrincipal String?
+  planoGoverno      String?
+  temasPreferidos   String[]
+  
+  // Campanha
+  dataInicioOficial DateTime?
+  dataEleicao       DateTime?
+  orcamentoTotal    Float?
+  metaVotos         Int?
+  metaIntencaoVoto  Float?
+  
+  // Adversários
+  adversarios       Json     // Array de objetos com nome, partido, posicao
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("configuracao_candidato")
+}
+
+// ==================== INTEGRAÇÃO DE CALENDÁRIOS ====================
+model IntegracaoCalendario {
+  id                    String   @id @default(cuid())
+  candidatoId           String
+  plataforma            PlataformaCalendario
+  nome                  String
+  email                 String
+  status                StatusIntegracao @default(DESCONECTADO)
+  
+  // Tokens OAuth
+  accessToken           String?
+  refreshToken          String?
+  tokenExpiry           DateTime?
+  
+  // Configurações de Sincronização
+  sincronizacaoBidirecional Boolean @default(false)
+  importarEventos       Boolean @default(true)
+  exportarEventos       Boolean @default(false)
+  notificacoes          Boolean @default(true)
+  conflitos             TipoConflito @default(ALERTAR)
+  
+  // Calendários Selecionados
+  calendariosPrincipais String[] // IDs dos calendários
+  categorias            String[] // Categorias de eventos
+  
+  // Métricas
+  ultimaSync            DateTime?
+  proximaSync           DateTime?
+  eventosImportados     Int @default(0)
+  eventosExportados     Int @default(0)
+  errosSync             Int @default(0)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@map("integracao_calendario")
+  @@index([candidatoId, plataforma])
+}
+
+// ==================== INTEGRAÇÃO DE REDES SOCIAIS ====================
+model IntegracaoRedeSocial {
+  id                String   @id @default(cuid())
+  candidatoId       String
+  plataforma        PlataformaRedeSocial
+  nome              String
+  usuario           String?
+  status            StatusIntegracao @default(DESCONECTADO)
+  
+  // Tokens OAuth
+  accessToken       String?
+  refreshToken      String?
+  tokenExpiry       DateTime?
+  
+  // Configurações
+  publicacaoAutomatica Boolean @default(false)
+  monitoramentoMencoes Boolean @default(true)
+  respostaAutomatica   Boolean @default(false)
+  
+  // Métricas
+  seguidores        Int @default(0)
+  seguindo          Int @default(0)
+  publicacoes       Int @default(0)
+  engajamento       Float @default(0)
+  alcance           Int @default(0)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("integracao_rede_social")
+  @@index([candidatoId, plataforma])
+}
+
+// ==================== PERSONALIZAÇÃO VISUAL ====================
+model PersonalizacaoVisual {
+  id                String   @id @default(cuid())
+  candidatoId       String   @unique
+  
+  // Tema Ativo
+  temaAtivo         String   @default("PSDB")
+  
+  // Cores Personalizadas
+  corPrimaria       String   @default("#0047AB")
+  corSecundaria     String   @default("#1E90FF")
+  corAcento         String   @default("#FFD700")
+  corFundo          String   @default("#0F172A")
+  corTexto          String   @default("#FFFFFF")
+  
+  // Configurações Visuais
+  animacoes         Boolean  @default(true)
+  glassmorphism     Boolean  @default(true)
+  neonEffects       Boolean  @default(true)
+  particulas        Boolean  @default(false)
+  modoEscuro        Boolean  @default(true)
+  contrasteAlto     Boolean  @default(false)
+  reducaoMovimento  Boolean  @default(false)
+  
+  // Layout
+  tamanhoFonte      Int      @default(16)
+  layoutSidebar     PosicaoSidebar @default(ESQUERDA)
+  layoutHeader      TipoHeader @default(FIXO)
+  
+  // Logo e Identidade
+  logoUrl           String?
+  faviconUrl        String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("personalizacao_visual")
+}
+
+// ==================== CONFIGURAÇÃO DE NOTIFICAÇÕES ====================
+model ConfiguracaoNotificacao {
+  id                String   @id @default(cuid())
+  candidatoId       String   @unique
+  
+  // Canais de Notificação
+  email             Boolean  @default(true)
+  sms               Boolean  @default(false)
+  push              Boolean  @default(true)
+  whatsapp          Boolean  @default(false)
+  
+  // Tipos de Notificação
+  alertasCrise      Boolean  @default(true)
+  novoEleitor       Boolean  @default(true)
+  campanhaFinalizada Boolean @default(true)
+  relatorioSemanal  Boolean  @default(true)
+  backupCompleto    Boolean  @default(true)
+  
+  // Configurações de Horário
+  horarioInicio     String   @default("07:00")
+  horarioFim        String   @default("22:00")
+  diasSemana        Int[]    @default([1,2,3,4,5]) // 0=Dom, 1=Seg, etc.
+  
+  // Frequência
+  frequenciaResumo  FrequenciaNotificacao @default(DIARIA)
+  
+  // Contatos Adicionais
+  contatosEmergencia Json    // Array de contatos para crises
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("configuracao_notificacao")
+}
+
+// ==================== SISTEMA DE USUÁRIOS ====================
+model UsuarioSistema {
+  id                String   @id @default(cuid())
+  candidatoId       String
+  
+  // Dados do Usuário
+  nome              String
+  email             String   @unique
+  telefone          String?
+  
+  // Acesso
+  senha             String   // Hash bcrypt
+  role              RoleUsuario @default(VISUALIZADOR)
+  status            StatusUsuario @default(ATIVO)
+  
+  // Permissões Granulares
+  permissoes        Json     // Objeto com permissões específicas
+  
+  // Configurações
+  primeiroLogin     Boolean  @default(true)
+  ultimoLogin       DateTime?
+  tentativasLogin   Int      @default(0)
+  bloqueadoAte      DateTime?
+  
+  // 2FA
+  twoFactorEnabled  Boolean  @default(false)
+  twoFactorSecret   String?
+  
+  // Relacionamentos
+  logs              LogAuditoria[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("usuario_sistema")
+  @@index([candidatoId, role])
+}
+
+// ==================== CONFIGURAÇÃO DO ORACLE CIPE ====================
+model ConfiguracaoOracle {
+  id                String   @id @default(cuid())
+  candidatoId       String   @unique
+  
+  // Configurações de IA
+  modeloPrincipal   String   @default("gpt-4")
+  modeloSecundario  String   @default("claude-3")
+  temperatura       Float    @default(0.7)
+  maxTokens         Int      @default(2000)
+  
+  // Personalização
+  personalidade     String   @default("profissional")
+  tomComunicacao    String   @default("formal")
+  especialidades    String[] @default(["politica", "economia", "saude"])
+  
+  // Conhecimento Base
+  biografiaCandidato String?
+  propostas         String?
+  posicionamentos   String?
+  
+  // Configurações de Resposta
+  respostaAutomatica Boolean @default(false)
+  tempoResposta     Int     @default(30) // segundos
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("configuracao_oracle")
+}
+
+// ==================== BACKUP E RESTAURAÇÃO ====================
+model BackupConfiguracao {
+  id                String   @id @default(cuid())
+  candidatoId       String
+  
+  // Dados do Backup
+  nome              String
+  descricao         String?
+  tipo              TipoBackup
+  status            StatusBackup @default(PENDENTE)
+  
+  // Configurações
+  automatico        Boolean  @default(false)
+  frequencia        FrequenciaBackup?
+  proximoBackup     DateTime?
+  
+  // Dados
+  tamanho           Int?     // bytes
+  arquivoUrl        String?
+  checksum          String?
+  
+  // Versionamento
+  versao            String
+  dataBackup        DateTime @default(now())
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("backup_configuracao")
+  @@index([candidatoId, dataBackup])
+}
+
+// ==================== LOG DE AUDITORIA ====================
+model LogAuditoria {
+  id                String   @id @default(cuid())
+  candidatoId       String
+  usuarioId         String?
+  
+  // Ação
+  acao              String   // "LOGIN", "CONFIGURACAO_ALTERADA", etc.
+  modulo            String   // "PERFIL", "INTEGRACAO", etc.
+  descricao         String
+  
+  // Contexto
+  ip                String?
+  userAgent         String?
+  dadosAnteriores   Json?
+  dadosNovos        Json?
+  
+  // Temporização
+  dataAcao          DateTime @default(now())
+  
+  // Relacionamentos
+  usuario           UsuarioSistema? @relation(fields: [usuarioId], references: [id])
+  
+  @@map("log_auditoria")
+  @@index([candidatoId, dataAcao])
+}
+
+// ==================== ENUMS ====================
+
+enum CargoPolitico {
+  PRESIDENTE
+  GOVERNADOR
+  SENADOR
+  DEPUTADO_FEDERAL
+  DEPUTADO_ESTADUAL
+  PREFEITO
+  VEREADOR
+}
+
+enum PlataformaCalendario {
+  GOOGLE
+  OUTLOOK
+  APPLE
+  EXCHANGE
+  CALDAV
+}
+
+enum PlataformaRedeSocial {
+  FACEBOOK
+  INSTAGRAM
+  TWITTER
+  YOUTUBE
+  TIKTOK
+  LINKEDIN
+  WHATSAPP
+  TELEGRAM
+}
+
+enum StatusIntegracao {
+  CONECTADO
+  DESCONECTADO
+  SINCRONIZANDO
+  ERRO
+  PAUSADO
+}
+
+enum TipoConflito {
+  IGNORAR
+  ALERTAR
+  SOBRESCREVER
+}
+
+enum PosicaoSidebar {
+  ESQUERDA
+  DIREITA
+  OCULTA
+}
+
+enum TipoHeader {
+  FIXO
+  FLUTUANTE
+  OCULTO
+}
+
+enum RoleUsuario {
+  ADMIN
+  COORDENADOR
+  ANALISTA
+  OPERADOR
+  VISUALIZADOR
+}
+
+enum StatusUsuario {
+  ATIVO
+  INATIVO
+  BLOQUEADO
+  PENDENTE
+}
+
+enum FrequenciaNotificacao {
+  TEMPO_REAL
+  DIARIA
+  SEMANAL
+  MENSAL
+}
+
+enum TipoBackup {
+  COMPLETO
+  INCREMENTAL
+  CONFIGURACOES
+  DADOS
+}
+
+enum StatusBackup {
+  PENDENTE
+  EXECUTANDO
+  CONCLUIDO
+  ERRO
+}
+
+enum FrequenciaBackup {
+  DIARIO
+  SEMANAL
+  MENSAL
+}
+

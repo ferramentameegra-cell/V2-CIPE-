@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Brain, Activity, Zap, Users, Target, TrendingUp, 
+  Brain, Activity, Zap, Users, Target, TrendingUp, TrendingDown,
   CheckCircle, AlertTriangle, Clock, Settings, Play, Pause,
-  MessageSquare, Shield, MapPin, BarChart3, Eye, Globe
+  MessageSquare, Shield, MapPin, BarChart3, Eye, Globe,
+  Bot, Search, RefreshCw, Monitor
 } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface CentralIAsProps {
   candidateId: string;
@@ -45,6 +49,8 @@ interface EventoIntegracao {
 const CentralIAs = ({ candidateId }: CentralIAsProps) => {
   const [ias, setIas] = useState<StatusIA[]>([]);
   const [eventos, setEventos] = useState<EventoIntegracao[]>([]);
+  const [modoVisualizacao, setModoVisualizacao] = useState<'dashboard' | 'central' | 'clone' | 'blindagem' | 'comunicacao' | 'narrativa' | 'pesquisas'>('dashboard');
+  const [filtroTempo, setFiltroTempo] = useState('24h');
   const [estatisticasGerais, setEstatisticasGerais] = useState({
     totalIAs: 0,
     iasAtivas: 0,
@@ -275,73 +281,115 @@ const CentralIAs = ({ candidateId }: CentralIAsProps) => {
     }
   };
 
+  const formatTempo = (ms: number) => {
+    if (ms < 1000) return `${ms}ms`;
+    return `${(ms / 1000).toFixed(1)}s`;
+  };
+
+  const formatTempoRelativo = (tempo: string) => {
+    return tempo;
+  };
+
+  const getPerformanceColor = (performance: number) => {
+    if (performance >= 90) return 'text-green-400';
+    if (performance >= 75) return 'text-yellow-400';
+    if (performance >= 50) return 'text-orange-400';
+    return 'text-red-400';
+  };
+
+  // Dados para gráficos
+  const dadosPerformance = [
+    { hora: '00:00', clone: 95, blindagem: 88, comunicacao: 92, narrativa: 0, pesquisas: 87 },
+    { hora: '04:00', clone: 93, blindagem: 91, comunicacao: 89, narrativa: 0, pesquisas: 90 },
+    { hora: '08:00', clone: 96, blindagem: 85, comunicacao: 94, narrativa: 76, pesquisas: 88 },
+    { hora: '12:00', clone: 94, blindagem: 89, comunicacao: 91, narrativa: 78, pesquisas: 92 },
+    { hora: '16:00', clone: 97, blindagem: 87, comunicacao: 93, narrativa: 74, pesquisas: 89 },
+    { hora: '20:00', clone: 94, blindagem: 90, comunicacao: 88, narrativa: 0, pesquisas: 91 }
+  ];
+
+  const dadosCusto = [
+    { ia: 'Clone', custo: 15.80, execucoes: 2847 },
+    { ia: 'Blindagem', custo: 22.40, execucoes: 15642 },
+    { ia: 'Comunicação', custo: 18.90, execucoes: 8934 },
+    { ia: 'Narrativa', custo: 35.60, execucoes: 1247 },
+    { ia: 'Pesquisas', custo: 12.30, execucoes: 456 }
+  ];
+
   return (
-    <div className="h-full w-full p-6 space-y-6 overflow-y-auto">
-      {/* Header com Estatísticas Gerais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glass-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-400">IAs Ativas</p>
-                <p className="text-2xl font-bold text-white">{estatisticasGerais.iasAtivas}/{estatisticasGerais.totalIAs}</p>
-                <div className="flex items-center mt-1">
-                  <Activity className="h-4 w-4 text-green-400 mr-1" />
-                  <span className="text-sm text-green-400">100% operacional</span>
-                </div>
-              </div>
-              <Brain className="h-8 w-8 text-blue-400" />
+    <div className="h-full w-full space-y-6 fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center space-x-4">
+            <h1 className="text-3xl font-bold text-white">Arsenal de IA</h1>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-green-400 font-medium">Sistema Operacional</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-slate-400 mt-1">
+            Central de inteligência artificial • {estatisticasGerais.iasAtivas} IAs ativas • Performance média: {estatisticasGerais.performanceMedia}%
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          <select
+            className="px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+            value={filtroTempo}
+            onChange={(e) => setFiltroTempo(e.target.value)}
+          >
+            <option value="1h">Última hora</option>
+            <option value="24h">Últimas 24h</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="30d">Últimos 30 dias</option>
+          </select>
+          
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            <Brain className="w-4 h-4 mr-2" />
+            Nova IA
+          </Button>
+          
+          <Button variant="outline">
+            <Settings className="w-4 h-4 mr-2" />
+            Configurar
+          </Button>
+        </div>
+      </div>
 
-        <Card className="glass-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-400">Performance Média</p>
-                <p className="text-2xl font-bold text-white">{estatisticasGerais.performanceMedia}%</p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                  <span className="text-sm text-green-400">Excelente</span>
-                </div>
-              </div>
-              <Zap className="h-8 w-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-400">Uptime Médio</p>
-                <p className="text-2xl font-bold text-white">{estatisticasGerais.uptimeMedia}%</p>
-                <div className="flex items-center mt-1">
-                  <CheckCircle className="h-4 w-4 text-green-400 mr-1" />
-                  <span className="text-sm text-green-400">Estável</span>
-                </div>
-              </div>
-              <Clock className="h-8 w-8 text-purple-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-400">Processamentos</p>
-                <p className="text-2xl font-bold text-white">{estatisticasGerais.totalProcessamentos.toLocaleString()}</p>
-                <div className="flex items-center mt-1">
-                  <Users className="h-4 w-4 text-blue-400 mr-1" />
-                  <span className="text-sm text-blue-400">+12% hoje</span>
-                </div>
-              </div>
-              <Target className="h-8 w-8 text-cyan-400" />
-            </div>
-          </CardContent>
-        </Card>
+      {/* Métricas Principais */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {[
+          { label: 'IAs Ativas', valor: `${estatisticasGerais.iasAtivas}/${estatisticasGerais.totalIAs}`, variacao: 100, icone: Brain, cor: 'blue', status: 'operacional' },
+          { label: 'Performance Média', valor: `${estatisticasGerais.performanceMedia}%`, variacao: 3.4, icone: Zap, cor: 'green', status: 'Excelente' },
+          { label: 'Uptime Médio', valor: `${estatisticasGerais.uptimeMedia}%`, variacao: 0.1, icone: Clock, cor: 'purple', status: 'Estável' },
+          { label: 'Execuções/Hora', valor: '1.247', variacao: 12.8, icone: Activity, cor: 'cyan', status: '+12% hoje' },
+          { label: 'Custo/Hora', valor: 'R$ 133.60', variacao: -8.2, icone: Target, cor: 'orange', status: '-8.2% otimizado' },
+          { label: 'Taxa de Sucesso', valor: '94.7%', variacao: 1.8, icone: CheckCircle, cor: 'emerald', status: '+1.8%' }
+        ].map((metrica, index) => {
+          const Icon = metrica.icone;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card className="glass-card border-green-500/30 bg-green-500/5">
+                <CardContent className="p-4 text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    <Icon className={`w-5 h-5 text-${metrica.cor}-400`} />
+                  </div>
+                  <div className="text-xl font-bold text-white mb-1">{metrica.valor}</div>
+                  <div className="text-xs text-slate-400 mb-1">{metrica.label}</div>
+                  <div className={`text-xs flex items-center justify-center ${metrica.variacao > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {metrica.variacao > 0 ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
+                    {Math.abs(metrica.variacao)}%
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Status das 6 IAs */}

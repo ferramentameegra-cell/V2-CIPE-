@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -15,16 +16,46 @@ import {
   FileText, Wallet, CalendarDays, Settings2, BellRing, ShieldCheck,
   UserPlus, BarChart, GitFork, Lightbulb, MessageCircle,
   UserRound, Network, TargetIcon, AlertCircle, MapPin, Users2,
-  Handshake, Share2, BarChart2, DollarSignIcon, CalendarIcon
+  Handshake, Share2, BarChart2, DollarSignIcon, CalendarIcon, Palette, Link2, Database
 } from 'lucide-react';
 import { LineChart as RechartsLineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import OracleCipe from '@/components/OracleCipe';
+import MetricasPrincipais from '@/components/MetricasPrincipais';
+import GraficosEstrategicosGrid from '@/components/GraficosEstrategicosGrid';
+import InsightsOracle from '@/components/InsightsOracle';
+import OportunidadesEstrategicas from '@/components/OportunidadesEstrategicas';
+import Proximos7Dias from '@/components/Proximos7Dias';
+import MetricasPrincipaisAvancadas from '@/components/MetricasPrincipaisAvancadas';
+import WhatIfScenarios from '@/components/WhatIfScenarios';
+import MiniMapaGeografico from '@/components/MiniMapaGeografico';
+import ComandosVoz from '@/components/ComandosVoz';
+import LayoutPersonalizado from '@/components/LayoutPersonalizado';
 import SalaDeGuerra from '@/components/modules/SalaDeGuerra';
 import WazeEleitoral from '@/components/modules/WazeEleitoral';
 import CRMEleitoral from '@/components/modules/CRMEleitoral';
 import FunilMobilizacao from '@/components/modules/FunilMobilizacao';
 import RadarCrises from '@/components/modules/RadarCrises';
 import CentralIAs from '@/components/modules/CentralIAs';
+import CloneDigital from '@/components/modules/CloneDigital';
+import BlindagemIA from '@/components/modules/BlindagemIA';
+import ComunicacaoIA from '@/components/modules/ComunicacaoIA';
+import NarrativaRA from '@/components/modules/NarrativaRA';
+import PesquisasAuto from '@/components/modules/PesquisasAuto';
+import AnaliseAdversarios from '@/components/modules/AnaliseAdversarios';
+import Relatorios from '@/components/modules/Relatorios';
+import OrcamentoROI from '@/components/modules/OrcamentoROI';
+import CalendarioEstrategico from '@/components/modules/CalendarioEstrategico';
+import RedesSociais from '@/components/modules/RedesSociais';
+import EmailMarketing from '@/components/modules/EmailMarketing';
+import SitesLanding from '@/components/modules/SitesLanding';
+import Segmentacao from '@/components/modules/Segmentacao';
+import Perfil from '@/components/modules/Perfil';
+import Notificacoes from '@/components/modules/Notificacoes';
+import Seguranca from '@/components/modules/Seguranca';
+import Configuracoes from '@/components/modules/Configuracoes';
+import Embaixadores from '@/components/modules/Embaixadores';
+import AnaliseIdeologica from '@/components/modules/AnaliseIdeologica';
+import BlindagemEstrategica from '@/components/modules/BlindagemEstrategica';
 
 interface DashboardProps {
   params: { candidateId: string };
@@ -32,6 +63,7 @@ interface DashboardProps {
 
 export default function DashboardPage({ params }: DashboardProps) {
   const { candidateId } = params;
+  const router = useRouter();
   const [activeModule, setActiveModule] = useState('visao-geral');
   const [searchQuery, setSearchQuery] = useState('');
   const [metrics, setMetrics] = useState({
@@ -60,13 +92,6 @@ export default function DashboardPage({ params }: DashboardProps) {
     { name: 'Direita', value: 15, color: '#0066FF' },
   ];
 
-  const productPerformance = [
-    { id: 1, assigned: 'Sunil Joshi', name: 'Elite Admin', priority: 'Low', budget: '$3.9k' },
-    { id: 2, assigned: 'Andrew McDownland', name: 'Real Homes WP Theme', priority: 'Medium', budget: '$24.5k' },
-    { id: 3, assigned: 'Christopher Jamil', name: 'MedicalPro WP Theme', priority: 'High', budget: '$12.8k' },
-    { id: 4, assigned: 'Nirav Joshi', name: 'Hosting Press HTML', priority: 'Critical', budget: '$2.4k' },
-  ];
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -80,217 +105,50 @@ export default function DashboardPage({ params }: DashboardProps) {
       case 'visao-geral':
         return (
           <div className="space-y-6 fade-in">
-            <OracleCipe context="dashboard" />
-
-            <Card className="glass-card">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                    {metrics.diasRestantes} DIAS
-                  </div>
-                  <p className="text-slate-400">para as eleições</p>
-                  <Progress value={(365 - metrics.diasRestantes) / 365 * 100} className="mt-4" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="glass-card">
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-400">Intenção de Voto</p>
-                      <p className="text-2xl font-bold text-white">{metrics.intencaoVoto}%</p>
-                      <div className="flex items-center mt-1">
-                        <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                        <span className="text-sm text-green-400">+2.3%</span>
-                      </div>
-                    </div>
-                    <Target className="h-8 w-8 text-blue-400" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-400">Total de Eleitores</p>
-                      <p className="text-2xl font-bold text-white">{metrics.totalEleitores.toLocaleString()}</p>
-                      <div className="flex items-center mt-1">
-                        <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                        <span className="text-sm text-green-400">+1.2K</span>
-                      </div>
-                    </div>
-                    <Users className="h-8 w-8 text-green-400" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-400">Engajamento</p>
-                      <p className="text-2xl font-bold text-white">{metrics.engajamento}%</p>
-                      <div className="flex items-center mt-1">
-                        <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                        <span className="text-sm text-green-400">+3.1%</span>
-                      </div>
-                    </div>
-                    <TrendingUp className="h-8 w-8 text-purple-400" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-400">Orçamento Usado</p>
-                      <p className="text-2xl font-bold text-white">{metrics.orcamentoUsado}%</p>
-                      <Progress value={metrics.orcamentoUsado} className="mt-2" />
-                    </div>
-                    <Calendar className="h-8 w-8 text-cyan-400" />
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Oracle CIPE - Sempre no topo */}
+            <div className="mt-1">
+              <OracleCipe context="dashboard" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="glass-card">
-                <CardHeader>
-                  <CardTitle className="text-white">Tendência de Intenção de Voto</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                      <XAxis dataKey="name" stroke="#9CA3AF" />
-                      <YAxis stroke="#9CA3AF" />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#1F2937',
-                          border: '1px solid #374151',
-                          borderRadius: '8px'
-                        }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="intencao"
-                        stroke="#0066FF"
-                        fill="url(#gradientIntencao)"
-                      />
-                      <defs>
-                        <linearGradient id="gradientIntencao" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#0066FF" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#0066FF" stopOpacity={0.1} />
-                        </linearGradient>
-                      </defs>
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+            {/* Métricas Principais Avançadas com Focus Mode */}
+            <MetricasPrincipaisAvancadas />
 
-              <Card className="glass-card">
-                <CardHeader>
-                  <CardTitle className="text-white">Segmentação de Eleitores</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={segmentacaoData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {segmentacaoData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Gráficos Estratégicos em Grid */}
+            <GraficosEstrategicosGrid />
 
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <AlertTriangle className="h-5 w-5 text-yellow-400 mr-2" />
-                  Alertas Prioritários
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span className="text-white">Crescimento de 15% no engajamento no Instagram</span>
-                    </div>
-                    <Badge variant="outline" className="text-green-400 border-green-400">Positivo</Badge>
-                  </div>
+            {/* What-If Scenarios */}
+            <WhatIfScenarios />
 
-                  <div className="flex items-center justify-between p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-                      <span className="text-white">Orçamento de mídia 65% utilizado</span>
-                    </div>
-                    <Badge variant="outline" className="text-yellow-400 border-yellow-400">Atenção</Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                      <span className="text-white">Nova oportunidade de debate identificada</span>
-                    </div>
-                    <Badge variant="outline" className="text-blue-400 border-blue-400">Info</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="glass-card p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">Product Performance</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-slate-800/50 rounded-lg overflow-hidden">
-                  <thead>
-                    <tr className="bg-slate-700/70">
-                      <th className="py-3 px-4 text-left text-sm font-medium text-slate-300">Id</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-slate-300">Assigned</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-slate-300">Name</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-slate-300">Priority</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-slate-300">Budget</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productPerformance.map((row) => (
-                      <tr key={row.id} className="border-t border-slate-700 hover:bg-slate-700/30">
-                        <td className="py-3 px-4 text-sm text-slate-300">{row.id}</td>
-                        <td className="py-3 px-4 text-sm text-white">{row.assigned}</td>
-                        <td className="py-3 px-4 text-sm text-white">{row.name}</td>
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            row.priority === 'Low' ? 'bg-green-500/20 text-green-400' :
-                            row.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                            row.priority === 'High' ? 'bg-orange-500/20 text-orange-400' :
-                            'bg-red-500/20 text-red-400'
-                          }`}>
-                            {row.priority}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-sm text-white">{row.budget}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {/* Mini-Mapa Geográfico + Comandos por Voz */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <MiniMapaGeografico />
+              </div>
+              <div className="lg:col-span-1">
+                <ComandosVoz />
               </div>
             </div>
+
+            {/* Layout em Grid para Desktop */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              {/* Coluna Esquerda */}
+              <div className="space-y-4">
+                {/* Insights do Oracle */}
+                <InsightsOracle />
+              </div>
+
+              {/* Coluna Direita */}
+              <div className="space-y-4">
+                {/* Oportunidades Estratégicas */}
+                <OportunidadesEstrategicas />
+                
+                {/* Próximos 7 Dias */}
+                <Proximos7Dias />
+              </div>
+            </div>
+
+            {/* Layout Personalizado - Sempre no final */}
+            <LayoutPersonalizado />
           </div>
         );
       case 'sala-de-guerra':
@@ -305,6 +163,46 @@ export default function DashboardPage({ params }: DashboardProps) {
         return <RadarCrises candidateId={candidateId} />;
       case 'central-de-ias':
         return <CentralIAs candidateId={candidateId} />;
+      case 'clone-digital':
+        return <CloneDigital candidateId={candidateId} />;
+      case 'blindagem-ia':
+        return <BlindagemIA candidateId={candidateId} />;
+      case 'comunicacao-ia':
+        return <ComunicacaoIA candidateId={candidateId} />;
+      case 'narrativa-ra':
+        return <NarrativaRA candidateId={candidateId} />;
+      case 'pesquisas-auto':
+        return <PesquisasAuto candidateId={candidateId} />;
+      case 'analise-adversarios':
+        return <AnaliseAdversarios candidateId={candidateId} />;
+      case 'relatorios':
+        return <Relatorios candidateId={candidateId} />;
+      case 'orcamento-roi':
+        return <OrcamentoROI candidateId={candidateId} />;
+      case 'calendario':
+        return <CalendarioEstrategico candidateId={candidateId} />;
+      case 'redes-sociais':
+        return <RedesSociais candidateId={candidateId} />;
+      case 'email-marketing':
+        return <EmailMarketing candidateId={candidateId} />;
+      case 'sites-landing':
+        return <SitesLanding candidateId={candidateId} />;
+      case 'segmentacao':
+        return <Segmentacao candidateId={candidateId} />;
+      case 'perfil':
+        return <Perfil candidateId={candidateId} />;
+      case 'notificacoes':
+        return <Notificacoes candidateId={candidateId} />;
+      case 'seguranca':
+        return <Seguranca candidateId={candidateId} />;
+      case 'configuracoes':
+        return <Configuracoes candidateId={candidateId} />;
+      case 'embaixadores':
+        return <Embaixadores candidateId={candidateId} />;
+      case 'analise-ideologica':
+        return <AnaliseIdeologica candidateId={candidateId} />;
+      case 'blindagem-estrategica':
+        return <BlindagemEstrategica candidateId={candidateId} />;
       default:
         return <div className="text-white">Módulo {activeModule} em construção...</div>;
     }
@@ -312,15 +210,110 @@ export default function DashboardPage({ params }: DashboardProps) {
 
   return (
     <div className="main-container">
-      <ScrollArea className="sidebar">
-        <div className="p-4">
-          <div className="text-white text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">CIPE</div>
-
-          <div className="flex items-center mb-6 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg mr-3">RN</div>
+      <header className="header p-4 bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border-b border-blue-500/20 shadow-2xl shadow-blue-500/10">
+        <div className="flex items-center justify-between w-full">
+          {/* Logo e Título Épico */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 flex items-center justify-center shadow-xl shadow-blue-500/30">
+                  <span className="text-white font-bold text-xl">CIPE</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center animate-pulse shadow-lg shadow-green-400/50">
+                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                </div>
+              </div>
             <div>
-              <p className="text-white font-semibold">Ronaldo Nogueira</p>
-              <p className="text-slate-400 text-sm">Deputado Federal - Nº 1014</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                  {activeModule === 'visao-geral' && 'Dashboard Executivo'}
+                  {activeModule === 'sala-de-guerra' && 'Sala de Guerra'}
+                  {activeModule === 'waze-eleitoral' && 'Waze Eleitoral'}
+                  {activeModule === 'crm-eleitoral' && 'CRM Eleitoral'}
+                  {activeModule === 'funil-mobilizacao' && 'Funil de Mobilização'}
+                  {activeModule === 'radar-de-crises' && 'Radar de Crises'}
+                  {activeModule === 'central-de-ias' && 'Central de IAs'}
+                  {activeModule === 'clone-digital' && 'Clone Digital'}
+                  {activeModule === 'blindagem' && 'Blindagem Estratégica'}
+                  {activeModule === 'comunicacao' && 'Comunicação em Massa'}
+                  {activeModule === 'narrativa-ra' && 'Narrativa Regional'}
+                  {activeModule === 'pesquisas-auto' && 'Pesquisas Automatizadas'}
+                  {activeModule === 'analise-adversarios' && 'Análise de Adversários'}
+                  {activeModule === 'segmentacao' && 'Segmentação de Eleitores'}
+                  {activeModule === 'analise-ideologica' && 'Análise Ideológica'}
+                  {activeModule === 'embaixadores' && 'Embaixadores'}
+                  {activeModule === 'redes-sociais' && 'Redes Sociais'}
+                  {activeModule === 'email-marketing' && 'Email Marketing'}
+                  {activeModule === 'sites-landing' && 'Sites & Landing'}
+                  {activeModule === 'relatorios' && 'Relatórios'}
+                  {activeModule === 'orcamento-roi' && 'Orçamento & ROI'}
+                  {activeModule === 'calendario' && 'Calendário'}
+                  {activeModule === 'perfil' && 'Perfil'}
+                  {activeModule === 'notificacoes' && 'Notificações'}
+                  {activeModule === 'seguranca' && 'Segurança'}
+                </h1>
+                <p className="text-slate-300 text-sm font-medium">
+                  Sistema de Inteligência Política e Eleitoral
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Área Central - Barra de Pesquisa Épica */}
+          <div className="flex-1 max-w-xl mx-6">
+            <form className="relative" onSubmit={handleSearch}>
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-400" />
+                  <Input
+                    type="text"
+                    className="w-full h-12 pl-9 pr-11 py-3 bg-slate-800/80 border border-blue-500/30 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50 rounded-xl backdrop-blur-sm text-base font-medium shadow-lg shadow-blue-500/10 transition-all duration-300"
+                    placeholder="Pesquisar em toda a base de inteligência..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <div className="w-7 h-7 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center cursor-pointer hover:shadow-lg shadow-blue-500/25 transition-all duration-300">
+                        <Search className="h-3.5 w-3.5 text-white" />
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Área Direita - Notificações e Perfil Épicos */}
+          <div className="flex items-center space-x-4">
+            {/* Notificações Avançadas */}
+            <div className="relative group">
+              <div className="p-2.5 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-lg border border-slate-600/50 backdrop-blur-sm cursor-pointer hover:border-blue-500/50 transition-all duration-300 shadow-lg">
+                <Bell className="h-5 w-5 text-white group-hover:text-blue-400 transition-colors" />
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-lg shadow-red-500/25">3</span>
+              </div>
+            </div>
+
+            {/* Perfil do Candidato Épico */}
+            <div className="flex items-center space-x-3 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl p-2.5 border border-slate-600/50 backdrop-blur-sm cursor-pointer hover:border-blue-500/50 transition-all duration-300 shadow-lg">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/25">RN</div>
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-sm">Ronaldo Nogueira</span>
+                <span className="text-blue-400 text-xs font-medium">Republicanos</span>
+              </div>
+              <div className="w-2.5 h-2.5 bg-green-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="content-container">
+        <ScrollArea className="sidebar">
+          <div className="p-4">
+            <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl border border-slate-600/50 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-lg shadow-blue-500/25">RN</div>
+              <div>
+                <p className="text-white font-bold text-lg">Ronaldo Nogueira</p>
+                <p className="text-blue-400 text-sm font-medium">Republicanos</p>
+                <p className="text-slate-400 text-xs">Deputado Federal - Nº 1014</p>
             </div>
           </div>
 
@@ -394,6 +387,18 @@ export default function DashboardPage({ params }: DashboardProps) {
                     Funil de Mobilização
                   </a>
                 </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setActiveModule('blindagem-estrategica'); }}
+                    className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
+                      activeModule === 'blindagem-estrategica' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
+                    }`}
+                  >
+                    <Shield className="h-5 w-5 mr-3" />
+                    Blindagem Estratégica
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -427,9 +432,9 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('blindagem')}
+                    onClick={() => setActiveModule('blindagem-ia')}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'blindagem' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
+                      activeModule === 'blindagem-ia' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
                   >
                     <ShieldCheck className="h-5 w-5 mr-3" />
@@ -439,9 +444,9 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('comunicacao')}
+                    onClick={() => setActiveModule('comunicacao-ia')}
                     className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'comunicacao' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
+                      activeModule === 'comunicacao-ia' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
                     }`}
                   >
                     <Megaphone className="h-5 w-5 mr-3" />
@@ -631,37 +636,94 @@ export default function DashboardPage({ params }: DashboardProps) {
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('perfil')}
-                    className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'perfil' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
-                    }`}
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50"
                   >
-                    <UserCog className="h-5 w-5 mr-3" />
-                    Perfil
+                    <Settings2 className="h-5 w-5 mr-3" />
+                    <div>
+                      <div className="font-medium">Configurações</div>
+                      <div className="text-xs text-slate-400">Dashboard completo</div>
+                    </div>
                   </a>
                 </li>
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('notificacoes')}
-                    className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'notificacoes' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
-                    }`}
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/perfil`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
                   >
-                    <BellRing className="h-5 w-5 mr-3" />
-                    Notificações
+                    <UserCog className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Perfil</span>
                   </a>
                 </li>
                 <li className="mb-1">
                   <a
                     href="#"
-                    onClick={() => setActiveModule('seguranca')}
-                    className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
-                      activeModule === 'seguranca' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
-                    }`}
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/integracao`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
                   >
-                    <Lock className="h-5 w-5 mr-3" />
-                    Segurança
+                    <Link2 className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Integrações</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/personalizacao`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <Palette className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Personalização</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/notificacoes`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <BellRing className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Notificações</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/usuarios`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Usuários</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/oracle`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <Brain className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Oracle</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/backup`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <Database className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Backup</span>
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); router.push(`/dashboard/${candidateId}/configuracoes/integracao/calendarios`); }}
+                    className="flex items-center p-2 rounded-lg transition-colors duration-200 text-white hover:bg-slate-700/50 ml-6"
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Calendários</span>
                   </a>
                 </li>
                 <li className="mb-1">
@@ -680,73 +742,17 @@ export default function DashboardPage({ params }: DashboardProps) {
         </div>
       </ScrollArea>
 
-      <div className="flex flex-col flex-1">
-        <header className="header p-4">
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-white text-2xl font-bold">
-              {activeModule === 'visao-geral' && 'Dashboard'}
-              {activeModule === 'sala-de-guerra' && 'Sala de Guerra'}
-              {activeModule === 'waze-eleitoral' && 'Waze Eleitoral'}
-              {activeModule === 'crm-eleitoral' && 'CRM Eleitoral'}
-              {activeModule === 'funil-mobilizacao' && 'Funil de Mobilização'}
-              {activeModule === 'radar-de-crises' && 'Radar de Crises'}
-              {activeModule === 'central-de-ias' && 'Central de IAs'}
-              {activeModule === 'clone-digital' && 'Clone Digital'}
-              {activeModule === 'blindagem' && 'Blindagem'}
-              {activeModule === 'comunicacao' && 'Comunicação'}
-              {activeModule === 'narrativa-ra' && 'Narrativa RA'}
-              {activeModule === 'pesquisas-auto' && 'Pesquisas Auto'}
-              {activeModule === 'analise-adversarios' && 'Análise de Adversários'}
-              {activeModule === 'segmentacao' && 'Segmentação de Eleitores'}
-              {activeModule === 'analise-ideologica' && 'Análise Ideológica'}
-              {activeModule === 'embaixadores' && 'Embaixadores'}
-              {activeModule === 'redes-sociais' && 'Redes Sociais'}
-              {activeModule === 'email-marketing' && 'Email Marketing'}
-              {activeModule === 'sites-landing' && 'Sites & Landing'}
-              {activeModule === 'relatorios' && 'Relatórios'}
-              {activeModule === 'orcamento-roi' && 'Orçamento & ROI'}
-              {activeModule === 'calendario' && 'Calendário'}
-              {activeModule === 'perfil' && 'Perfil'}
-              {activeModule === 'notificacoes' && 'Notificações'}
-              {activeModule === 'seguranca' && 'Segurança'}
-              {activeModule === 'visao-geral' ? '' : ` do Candidato: ${candidateId}`}
-            </h1>
-            
-            <div className="flex items-center space-x-4">
-              {/* Campo de Pesquisa */}
-              <form onSubmit={handleSearch} className="relative">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    type="text"
-                    placeholder="Pesquisar no sistema..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 pl-10 pr-4 py-2 bg-slate-800/50 border-slate-600 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg"
-                  />
-                </div>
-              </form>
-              
-              {/* Notificações e Perfil */}
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <Bell className="h-5 w-5 text-white cursor-pointer hover:text-blue-400 transition-colors" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-                </div>
-                <div className="flex items-center space-x-2 cursor-pointer hover:bg-slate-700/50 rounded-lg p-2 transition-colors">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">RN</div>
-                  <span className="text-white text-sm">Ronaldo Nogueira</span>
-                  <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="main-content p-6 module-container">
+        <main className="main-content p-4 pt-6 module-container">
           {renderContent()}
         </main>
       </div>
+      
+      {/* Barra Inferior - Espaço Reservado */}
+      <footer className="h-16 bg-slate-900/50 border-t border-slate-700/50 backdrop-blur-sm flex items-center justify-center">
+        <div className="text-slate-400 text-sm">
+          Sistema CIPE • Versão 2.0 • Espaço reservado para informações futuras
+        </div>
+      </footer>
     </div>
   );
 }

@@ -62,7 +62,6 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
   const [routes, setRoutes] = useState<RouteData[]>([]);
   const [geographicData, setGeographicData] = useState<GeographicData[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<RouteData | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'routes' | 'geography' | 'optimization'>('overview');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -222,39 +221,16 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 fade-in">
       {/* Oracle CIPE para Waze Eleitoral */}
-      <OracleCipe 
-        candidateId={candidateId} 
-        context="waze_eleitoral"
-        placeholder="Qual a melhor rota para vitória? Como otimizar a agenda?"
-      />
+      <OracleCipe context="waze_eleitoral" />
 
-      {/* Tabs de Navegação */}
-      <div className="flex space-x-1 bg-slate-800/50 p-1 rounded-lg">
-        {[
-          { id: 'overview', label: 'Visão Geral', icon: Target },
-          { id: 'routes', label: 'Rotas', icon: Route },
-          { id: 'geography', label: 'Geografia', icon: MapPin },
-          { id: 'optimization', label: 'Otimização', icon: Zap }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-              activeTab === tab.id
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            <tab.icon className="h-4 w-4" />
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Conteúdo das Tabs */}
-      {activeTab === 'overview' && (
+      {/* SEÇÃO 1: VISÃO GERAL */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <Target className="w-6 h-6 text-blue-400" />
+          <span>Visão Geral</span>
+        </h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Resumo das Rotas */}
           <Card className="glass-card">
@@ -348,9 +324,14 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
             </CardContent>
           </Card>
         </div>
-      )}
+      </div>
 
-      {activeTab === 'routes' && (
+      {/* SEÇÃO 2: ROTAS DETALHADAS */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <Route className="w-6 h-6 text-green-400" />
+          <span>Rotas Eleitorais</span>
+        </h2>
         <div className="space-y-6">
           {routes.map((route) => (
             <Card key={route.id} className="glass-card">
@@ -467,9 +448,14 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
             </Card>
           ))}
         </div>
-      )}
+      </div>
 
-      {activeTab === 'geography' && (
+      {/* SEÇÃO 3: ANÁLISE GEOGRÁFICA */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <MapPin className="w-6 h-6 text-purple-400" />
+          <span>Análise Geográfica</span>
+        </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {geographicData.map((region) => (
             <Card key={region.region} className="glass-card">
@@ -543,9 +529,14 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
             </Card>
           ))}
         </div>
-      )}
+      </div>
 
-      {activeTab === 'optimization' && (
+      {/* SEÇÃO 4: OTIMIZAÇÃO E RECOMENDAÇÕES */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <Zap className="w-6 h-6 text-yellow-400" />
+          <span>Otimização e Recomendações</span>
+        </h2>
         <div className="space-y-6">
           <Card className="glass-card">
             <CardHeader>
@@ -612,7 +603,7 @@ export default function WazeEleitoral({ candidateId }: WazeEleitoralProps) {
             </CardContent>
           </Card>
         </div>
-      )}
+      </div>
     </div>
   );
 }

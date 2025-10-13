@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+// import { Textarea } from '@/components/ui/textarea';
 import { 
   BarChart3, Target, Users, TrendingUp, MessageSquare, 
   Clock, CheckCircle, AlertTriangle, Send, Filter, Plus,
@@ -476,7 +476,7 @@ const PesquisasAutomatizadas = ({ eleitorId }: PesquisasAutomatizadasProps) => {
             
             <div>
               <label className="text-white text-sm font-medium">Pergunta Principal</label>
-              <Textarea 
+              <textarea 
                 placeholder="Ex: Qual sua maior preocupação para 2025?"
                 className="min-h-[100px] mb-4"
               />

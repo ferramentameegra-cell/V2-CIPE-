@@ -26,6 +26,7 @@ export default function OracleCipe({ context }: OracleCipeProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Simular ativação do Oracle
   useEffect(() => {
@@ -183,11 +184,31 @@ export default function OracleCipe({ context }: OracleCipeProps) {
                 <div className="font-bold text-purple-400">6/6</div>
               </div>
             </div>
+
+            {/* Botão Expandir/Minimizar */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600/80 to-purple-600/80 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl transition-all duration-300 text-sm font-medium border border-blue-500/30 hover:border-blue-400/60 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 z-50 relative cursor-pointer"
+              style={{ 
+                zIndex: 999, 
+                pointerEvents: 'auto',
+                position: 'relative'
+              }}
+              type="button"
+            >
+              <span className="text-lg font-bold">{isExpanded ? '−' : '+'}</span>
+              <span>{isExpanded ? 'Minimizar' : 'Expandir'}</span>
+            </button>
           </div>
 
-          {/* Chat Area compacta */}
-          <div className="relative">
-            <ScrollArea className="h-[200px] pr-4 mb-4">
+          {/* Chat Area condicional */}
+          {isExpanded && (
+            <div className="relative">
+              <ScrollArea className="h-[300px] pr-4 mb-4">
               <div className="space-y-3">
                 {messages.length === 0 && (
                   <div className="text-center py-6">
@@ -285,48 +306,49 @@ export default function OracleCipe({ context }: OracleCipeProps) {
                 ))}
               </div>
             </div>
+            </div>
+          )}
 
-            {/* Input Compacto */}
-            <div className="relative">
-              <div className="flex space-x-2">
-                <div className="relative flex-1">
-                  <Input
-                    placeholder="Pergunte ao Oracle CIPE..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    className="bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 rounded-lg pl-3 pr-10 h-9 text-xs"
-                    disabled={loading}
-                  />
-                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                    <MessageSquare className="h-4 w-4 text-slate-400" />
-                  </div>
+          {/* Input Condicional */}
+          <div className="relative">
+            <div className="flex space-x-2">
+              <div className="relative flex-1">
+                <Input
+                  placeholder={isExpanded ? "Pergunte ao Oracle CIPE..." : "Digite sua pergunta..."}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  className="bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 rounded-lg pl-3 pr-10 h-9 text-xs"
+                  disabled={loading}
+                />
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                  <MessageSquare className="h-4 w-4 text-slate-400" />
                 </div>
-                <Button
-                  onClick={handleSendMessage}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4 h-9 rounded-lg shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
-                  disabled={loading || !input.trim()}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
               </div>
-              
-              {/* Status Compacto */}
-              <div className="flex items-center justify-between mt-2 text-xs text-slate-400">
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-1">
-                    <Shield className="h-3 w-3 text-green-400" />
-                    <span>Seguro</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Eye className="h-3 w-3 text-blue-400" />
-                    <span>Monitorando</span>
-                  </div>
+              <Button
+                onClick={handleSendMessage}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4 h-9 rounded-lg shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
+                disabled={loading || !input.trim()}
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            {/* Status Compacto */}
+            <div className="flex items-center justify-between mt-2 text-xs text-slate-400">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-1">
+                  <Shield className="h-3 w-3 text-green-400" />
+                  <span>Seguro</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <TrendingUp className="h-3 w-3 text-purple-400" />
-                  <span>Excelente</span>
+                  <Eye className="h-3 w-3 text-blue-400" />
+                  <span>Monitorando</span>
                 </div>
+              </div>
+              <div className="flex items-center space-x-1">
+                <TrendingUp className="h-3 w-3 text-purple-400" />
+                <span>Excelente</span>
               </div>
             </div>
           </div>
