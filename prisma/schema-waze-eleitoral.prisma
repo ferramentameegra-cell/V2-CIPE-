@@ -1,0 +1,266 @@
+//============== WAZE ELEITORAL MODELS ==============
+
+model Rota {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  nome              String
+  descricao         String?
+  tipo              TipoRota
+  status            StatusRota  @default(PLANEJADA)
+  
+  // Dados da Rota
+  pontosDeInteresse Json        // Array de PontoDeInteresse
+  rotaOtimizada     Json?       // GeoJSON com a rota otimizada
+  distanciaEstimada Float?      // em km
+  tempoEstimado     Int?        // em minutos
+  custoEstimado     Float?      // em R$
+  
+  // Datas
+  dataInicio        DateTime
+  dataFim           DateTime?
+  
+  // Métricas
+  alcanceEstimado   Int?        // Pessoas impactadas
+  votosAlvo         Int?        // Votos potenciais
+  
+  // Relacionamentos
+  equipes           EquipeCampo[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_rotas")
+}
+
+model EquipeCampo {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  nome              String
+  liderId           String?     // ID do MembroEquipe que é o líder
+  status            StatusEquipe @default(INATIVA)
+  
+  // Métricas
+  kmPercorridos     Float       @default(0)
+  interacoesRegistradas Int     @default(0)
+  eventosRealizados Int         @default(0)
+  
+  // Relacionamentos
+  membros           MembroEquipe[]
+  rotaAtualId       String?
+  rotaAtual         Rota?       @relation(fields: [rotaAtualId], references: [id])
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_equipes_campo")
+}
+
+model MembroEquipe {
+  id                String      @id @default(cuid())
+  equipeId          String
+  nome              String
+  telefone          String?
+  funcao            String?
+  
+  // Posição em tempo real
+  latitude          Float?
+  longitude         Float?
+  ultimoUpdate      DateTime?
+  velocidade        Float?      // km/h
+  bateria           Int?        // %
+  
+  // Status
+  emRota            Boolean     @default(false)
+  disponivel        Boolean     @default(true)
+  
+  // Relacionamentos
+  equipe            EquipeCampo @relation(fields: [equipeId], references: [id])
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_membros_equipe")
+}
+
+model AlertaGeografico {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  nome              String
+  tipo              TipoAlertaGeo
+  descricao         String?
+  
+  // Definição da área do alerta
+  shape             Json        // GeoJSON (Polygon ou Circle)
+  raio              Float?      // em metros, para alertas de proximidade
+  
+  // Centro (para alertas de proximidade)
+  latitude          Float?
+  longitude         Float?
+  
+  // Condições
+  ativo             Boolean     @default(true)
+  notificarEquipe   Boolean     @default(true)
+  notificarGestor   Boolean     @default(true)
+  nivelPrioridade   Int         @default(1) // 1-5
+  
+  // Contadores
+  vezesAcionado     Int         @default(0)
+  ultimoAcionamento DateTime?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_alertas_geo")
+}
+
+model CamadaMapa {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  nome              String
+  tipo              TipoCamada
+  visivel           Boolean     @default(true)
+  
+  // Dados da camada (GeoJSON)
+  dados             Json
+  
+  // Estilo
+  cor               String?     // Cor principal (hex)
+  opacidade         Float       @default(0.7)
+  raio              Int?        // Para heatmaps
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_camadas_mapa")
+}
+
+model EventoRota {
+  id                String      @id @default(cuid())
+  rotaId            String
+  nome              String
+  tipo              TipoEventoRota
+  
+  // Localização
+  endereco          String
+  latitude          Float
+  longitude         Float
+  
+  // Timing
+  horarioInicio     DateTime
+  horarioFim        DateTime?
+  duracaoEstimada   Int?        // em minutos
+  
+  // Detalhes
+  descricao         String?
+  publicoAlvo       Int?        // Pessoas esperadas
+  materialNecessario String[]   // Lista de materiais
+  
+  // Status
+  realizado         Boolean     @default(false)
+  publicoReal       Int?        // Pessoas que compareceram
+  observacoes       String?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("waze_eventos_rota")
+}
+
+model RegistroInteracao {
+  id                String      @id @default(cuid())
+  membroEquipeId    String
+  
+  // Localização
+  latitude          Float
+  longitude         Float
+  endereco          String?
+  
+  // Interação
+  tipo              TipoInteracao
+  sentimento        String?     // positivo, neutro, negativo
+  descricao         String?
+  fotoUrl           String?
+  audioUrl          String?     // Nota de voz
+  
+  // Eleitor (se aplicável)
+  eleitorCPF        String?
+  eleitorNome       String?
+  eleitorTelefone   String?
+  
+  timestamp         DateTime    @default(now())
+  
+  @@map("waze_registros_interacao")
+}
+
+//============== ENUMS PARA WAZE ELEITORAL ==============
+
+enum TipoRota {
+  CARREATA
+  CAMINHADA
+  VISITA_LIDERANCAS
+  DISTRIBUICAO_MATERIAL
+  EVENTO_COMICIO
+  CORPO_A_CORPO
+  PANFLETAGEM
+}
+
+enum StatusRota {
+  PLANEJADA
+  EM_ANDAMENTO
+  CONCLUIDA
+  CANCELADA
+  PAUSADA
+}
+
+enum StatusEquipe {
+  ATIVA
+  INATIVA
+  EM_ROTA
+  EM_PAUSA
+  OFFLINE
+}
+
+enum TipoAlertaGeo {
+  PROXIMIDADE_ADVERSARIO
+  AREA_DE_RISCO
+  OPORTUNIDADE_CAMPANHA
+  ENTRADA_ZONA_ALVO
+  SAIDA_ZONA_ALVO
+  AREA_CRITICA
+  ZONA_ELEITORAL
+}
+
+enum TipoCamada {
+  VOTOS_ANTERIORES
+  DENSIDADE_POPULACIONAL
+  RENDA_MEDIA
+  APOIADORES
+  INDECISOS
+  ADVERSARIOS
+  ENGAJAMENTO_SOCIAL
+  EVENTOS
+  EQUIPES
+  SECOES_ELEITORAIS
+}
+
+enum TipoEventoRota {
+  COMICIO
+  REUNIAO
+  ENTREVISTA
+  PANFLETAGEM
+  CORPO_A_CORPO
+  EVENTO_PUBLICO
+  VISITA_LIDERANCA
+}
+
+enum TipoInteracao {
+  CONVERSA
+  ENTREGA_MATERIAL
+  FOTO
+  VIDEO
+  ADESAO
+  RECUSA
+  DUVIDA
+  RECLAMACAO
+}
+

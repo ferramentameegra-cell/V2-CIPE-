@@ -239,7 +239,7 @@ export default function GerenciamentoUsuarios({ candidateId }: { candidateId: st
                     <div className="flex items-center space-x-2 mb-1">
                       <h3 className="font-medium text-white">{usuario.nome}</h3>
                       {usuario.twoFactorEnabled && (
-                        <Shield className="w-4 h-4 text-green-400" title="2FA Ativado" />
+                        <Shield className="w-4 h-4 text-green-400" />
                       )}
                     </div>
                     <div className="flex items-center space-x-3 text-sm text-slate-400">

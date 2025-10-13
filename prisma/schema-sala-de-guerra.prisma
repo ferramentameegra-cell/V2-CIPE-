@@ -1,0 +1,301 @@
+// SCHEMA PRISMA - SALA DE GUERRA 100% COMPLETO
+
+// Evento Crítico (Crise ou Oportunidade)
+model EventoCritico {
+  id                    String   @id @default(cuid())
+  candidatoId          String
+  titulo               String
+  descricao            String
+  tipo                 TipoEvento
+  severidade           Severidade
+  status               StatusEvento
+  urgencia             Int      // 1-100
+  impactoEstimado      Float    // -100 a +100
+  probabilidadeEscalada Float   // 0-1
+  custoInacao          Float?   // R$
+  demografiaAfetada    String?  // JSON
+  fontesDeteccao       String[] // URLs, menções
+  palavrasChave        String[]
+  regioesAfetadas      String[] // Estados, cidades
+  canalOrigem          String   // Twitter, Instagram, etc.
+  sentimentoPublico    Float?   // -1 a +1
+  alcanceEstimado      Int?     // Pessoas impactadas
+  janelaOportunidade   DateTime? // Para oportunidades
+  prazoResposta        DateTime? // Deadline crítico
+  criadoEm             DateTime @default(now())
+  atualizadoEm         DateTime @updatedAt
+  
+  // Relacionamentos
+  acoes                AcaoRapida[]
+  atualizacoes         AtualizacaoEvento[]
+  responsaveis         ResponsavelEvento[]
+  monitoramento        MonitoramentoCanal[]
+  
+  @@map("eventos_criticos")
+}
+
+// Ação Rápida de Resposta
+model AcaoRapida {
+  id                   String   @id @default(cuid())
+  eventoId             String
+  titulo               String
+  descricao            String
+  tipo                 TipoAcao
+  prioridade           Prioridade
+  status               StatusAcao
+  recursosNecessarios  String[] // Equipe, orçamento, tempo
+  orcamentoEstimado    Float?   // R$
+  tempoExecucao        Int?     // Minutos
+  responsavelId        String?
+  equipeAtribuida      String[] // IDs dos membros
+  templateId           String?  // Template usado
+  canaisExecucao       String[] // Onde será executada
+  metricasAlvo         String?  // JSON com KPIs
+  resultadosEsperados  String?
+  impactoMedido        Float?   // Após execução
+  custoReal            Float?   // Custo final
+  tempoRealExecucao    Int?     // Tempo real gasto
+  observacoes          String?
+  iniciadaEm           DateTime?
+  concluidaEm          DateTime?
+  criadaEm             DateTime @default(now())
+  
+  // Relacionamentos
+  evento               EventoCritico @relation(fields: [eventoId], references: [id])
+  atualizacoes         AtualizacaoEvento[]
+  
+  @@map("acoes_rapidas")
+}
+
+// Atualizações de Eventos
+model AtualizacaoEvento {
+  id           String   @id @default(cuid())
+  eventoId     String?
+  acaoId       String?
+  autorId      String   // Quem fez a atualização
+  tipo         TipoAtualizacao
+  titulo       String
+  descricao    String
+  impacto      Float?   // Mudança no impacto
+  severidade   Severidade?
+  status       String?  // Novo status
+  anexos       String[] // URLs de evidências
+  metricas     String?  // JSON com métricas
+  criadaEm     DateTime @default(now())
+  
+  // Relacionamentos
+  evento       EventoCritico? @relation(fields: [eventoId], references: [id])
+  acao         AcaoRapida? @relation(fields: [acaoId], references: [id])
+  
+  @@map("atualizacoes_eventos")
+}
+
+// Responsáveis por Eventos
+model ResponsavelEvento {
+  id           String   @id @default(cuid())
+  eventoId     String
+  usuarioId    String
+  papel        PapelResponsavel
+  atribuicaoEm DateTime @default(now())
+  
+  // Relacionamentos
+  evento       EventoCritico @relation(fields: [eventoId], references: [id])
+  
+  @@map("responsaveis_eventos")
+}
+
+// Monitoramento de Canais
+model MonitoramentoCanal {
+  id              String   @id @default(cuid())
+  eventoId        String?
+  canal           String   // Twitter, Instagram, etc.
+  palavrasChave   String[] // Termos monitorados
+  filtros         String?  // JSON com filtros
+  status          StatusMonitoramento
+  ultimaVerificacao DateTime?
+  mencoesDetetadas Int     @default(0)
+  sentimentoMedio  Float?  // -1 a +1
+  alcanceTotal     Int     @default(0)
+  alertasGerados   Int     @default(0)
+  configuradoEm    DateTime @default(now())
+  
+  // Relacionamentos
+  evento          EventoCritico? @relation(fields: [eventoId], references: [id])
+  
+  @@map("monitoramento_canais")
+}
+
+// Equipe Operacional
+model EquipeOperacional {
+  id              String   @id @default(cuid())
+  usuarioId       String   @unique
+  nome            String
+  email           String
+  telefone        String?
+  papel           PapelEquipe
+  especialidades  String[] // Crise, Oportunidade, Digital, etc.
+  status          StatusMembro
+  disponibilidade String?  // JSON com horários
+  cargaTrabalho   Int      @default(0) // 0-100%
+  eventosAtivos   Int      @default(0)
+  tempoMedioResposta Int?  // Minutos
+  avaliacaoPerformance Float? // 1-5
+  ultimaAtividade DateTime?
+  criadoEm        DateTime @default(now())
+  
+  @@map("equipe_operacional")
+}
+
+// Templates de Ação
+model TemplateAcao {
+  id                  String   @id @default(cuid())
+  nome                String
+  descricao           String
+  categoria           CategoriaTemplate
+  tipoEvento          TipoEvento[] // Para quais tipos serve
+  severidadeMinima    Severidade
+  conteudoTemplate    String   // JSON com estrutura
+  recursosNecessarios String[] // Recursos padrão
+  tempoExecucaoMedio  Int?     // Minutos
+  custoMedio          Float?   // R$
+  taxaSucesso         Float?   // 0-1
+  vezesUtilizado      Int      @default(0)
+  criadoEm            DateTime @default(now())
+  atualizadoEm        DateTime @updatedAt
+  
+  @@map("templates_acao")
+}
+
+// Histórico de Operações
+model HistoricoOperacao {
+  id           String   @id @default(cuid())
+  candidatoId  String
+  tipo         TipoOperacao
+  titulo       String
+  descricao    String
+  dadosEvento  String?  // JSON com dados do evento
+  resultados   String?  // JSON com resultados
+  metricas     String?  // JSON com métricas
+  duracaoTotal Int?     // Minutos
+  custoTotal   Float?   // R$
+  equipeEnvolvida String[] // IDs dos membros
+  licaoAprendida String?
+  criadoEm     DateTime @default(now())
+  
+  @@map("historico_operacoes")
+}
+
+// Enums
+enum TipoEvento {
+  CRISE_IMAGEM
+  CRISE_FINANCEIRA
+  CRISE_JURIDICA
+  CRISE_PESSOAL
+  OPORTUNIDADE_MIDIA
+  OPORTUNIDADE_POLITICA
+  OPORTUNIDADE_SOCIAL
+  TRENDING_TOPIC
+  ATAQUE_ADVERSARIO
+  FAKE_NEWS
+}
+
+enum Severidade {
+  BAIXA
+  MEDIA
+  ALTA
+  CRITICA
+  EMERGENCIA
+}
+
+enum StatusEvento {
+  DETECTADO
+  EM_ANALISE
+  EM_RESPOSTA
+  MONITORANDO
+  RESOLVIDO
+  ARQUIVADO
+}
+
+enum TipoAcao {
+  POST_REDES_SOCIAIS
+  COMUNICADO_IMPRENSA
+  RESPOSTA_DIRETA
+  MOBILIZACAO_BASE
+  ACAO_JURIDICA
+  EVENTO_PUBLICO
+  CAMPANHA_DIGITAL
+  CONTATO_INFLUENCIADORES
+}
+
+enum StatusAcao {
+  PLANEJADA
+  EM_EXECUCAO
+  PAUSADA
+  CONCLUIDA
+  CANCELADA
+}
+
+enum Prioridade {
+  BAIXA
+  MEDIA
+  ALTA
+  URGENTE
+  CRITICA
+}
+
+enum TipoAtualizacao {
+  STATUS_MUDOU
+  NOVA_EVIDENCIA
+  IMPACTO_MEDIDO
+  ACAO_EXECUTADA
+  ESCALADA_DETECTADA
+  RESOLUCAO_PARCIAL
+}
+
+enum PapelResponsavel {
+  COORDENADOR
+  EXECUTOR
+  ANALISTA
+  COMUNICADOR
+  MONITOR
+}
+
+enum StatusMonitoramento {
+  ATIVO
+  PAUSADO
+  INATIVO
+  ERRO
+}
+
+enum PapelEquipe {
+  COORDENADOR_GERAL
+  ANALISTA_CRISES
+  ESPECIALISTA_DIGITAL
+  COMUNICADOR
+  MONITOR_TEMPO_REAL
+  EXECUTOR_ACOES
+}
+
+enum StatusMembro {
+  DISPONIVEL
+  OCUPADO
+  AUSENTE
+  OFFLINE
+}
+
+enum CategoriaTemplate {
+  RESPOSTA_CRISE
+  APROVEITAMENTO_OPORTUNIDADE
+  COMUNICACAO_PREVENTIVA
+  MOBILIZACAO_URGENTE
+  ACAO_JURIDICA
+}
+
+enum TipoOperacao {
+  GESTAO_CRISE
+  APROVEITAMENTO_OPORTUNIDADE
+  MONITORAMENTO_PREVENTIVO
+  RESPOSTA_ATAQUE
+  CAMPANHA_RAPIDA
+}
+
