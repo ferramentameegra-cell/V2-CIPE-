@@ -16,7 +16,7 @@ import {
   estimarTempoViagem 
 } from '@/lib/waze/otimizacao';
 
-interface Ponto {
+interface PontoLocal {
   id: string;
   nome: string;
   endereco: string;
@@ -26,11 +26,11 @@ interface Ponto {
   prioridade?: number; // 1-10
 }
 
-interface RotaOtimizada {
+interface RotaOtimizadaLocal {
   ordem: string[];
   distanciaTotal: number;
   tempoTotal: number;
-  pontosOrdenados: Ponto[];
+  pontosOrdenados: PontoLocal[];
 }
 
 interface OtimizadorDeRotasProps {
@@ -39,8 +39,8 @@ interface OtimizadorDeRotasProps {
 }
 
 export default function OtimizadorDeRotas({ candidateId, onRotaSalva }: OtimizadorDeRotasProps) {
-  const [pontos, setPontos] = useState<Ponto[]>([]);
-  const [rotaOtimizada, setRotaOtimizada] = useState<RotaOtimizada | null>(null);
+  const [pontos, setPontos] = useState<PontoLocal[]>([]);
+  const [rotaOtimizada, setRotaOtimizada] = useState<RotaOtimizadaLocal | null>(null);
   const [novaRota, setNovaRota] = useState({
     nome: '',
     tipo: 'CARREATA',
@@ -79,7 +79,7 @@ export default function OtimizadorDeRotas({ candidateId, onRotaSalva }: Otimizad
       // Simular geocoding (em produção, usar Mapbox Geocoding API)
       const coordenadas = await geocodificarEndereco(novoPonto.endereco);
 
-      const ponto: Ponto = {
+      const ponto: PontoLocal = {
         id: `ponto-${Date.now()}`,
         nome: novoPonto.nome,
         endereco: novoPonto.endereco,
@@ -96,7 +96,7 @@ export default function OtimizadorDeRotas({ candidateId, onRotaSalva }: Otimizad
       alert('Erro ao buscar endereço. Usando coordenadas simuladas.');
       
       // Fallback com coordenadas simuladas
-      const ponto: Ponto = {
+      const ponto: PontoLocal = {
         id: `ponto-${Date.now()}`,
         nome: novoPonto.nome,
         endereco: novoPonto.endereco,
@@ -138,8 +138,32 @@ export default function OtimizadorDeRotas({ candidateId, onRotaSalva }: Otimizad
 
     // Simular processamento
     setTimeout(() => {
-      const resultado = otimizarRota2Opt(pontos);
-      setRotaOtimizada(resultado);
+      // Converter pontos locais para o formato da biblioteca
+      const pontosParaOtimizar = pontos.map(p => ({
+        id: p.id,
+        nome: p.nome,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        duracao: p.duracao,
+        prioridade: p.prioridade
+      }));
+      
+      const resultado = otimizarRota2Opt(pontosParaOtimizar);
+      
+      // Converter resultado de volta para incluir endereços
+      const rotaComEnderecos: RotaOtimizadaLocal = {
+        ...resultado,
+        pontosOrdenados: resultado.pontosOrdenados.map(p => {
+          const pontoOriginal = pontos.find(po => po.id === p.id);
+          return {
+            ...p,
+            endereco: pontoOriginal?.endereco || '',
+            nome: pontoOriginal?.nome || p.nome
+          };
+        })
+      };
+      
+      setRotaOtimizada(rotaComEnderecos);
       setOtimizando(false);
       setEtapa('otimizacao');
     }, 1500);
