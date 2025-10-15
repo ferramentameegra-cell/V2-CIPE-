@@ -1,0 +1,182 @@
+//============== RADAR DE CRISES MODELS ==============
+
+model AlertaCrise {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  
+  titulo            String
+  descricao         String
+  nivelAmeaca       NivelAmeaca @default(BAIXO)
+  status            StatusAlertaCrise @default(MONITORANDO)
+  
+  // Análise de IA
+  sentimentoPredominante Float // -1 (negativo) a 1 (positivo)
+  potencialViral      Float // 0 a 1
+  indiceImpacto       Float // 0 a 100, calculado a partir dos outros fatores
+  
+  // Fontes
+  fonteOriginal     String?   // URL da primeira menção
+  principaisFontes  Json?     // Array de URLs ou fontes importantes
+  
+  // Relacionamentos
+  mencoes           Mencao[]
+  playbookAtivoId   String?
+  playbookAtivo     PlaybookCrise? @relation(fields: [playbookAtivoId], references: [id])
+  tarefas           TarefaCrise[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("crises_alertas")
+}
+
+model Mencao {
+  id                String      @id @default(cuid())
+  alertaId          String
+  
+  conteudo          String
+  autor             String?
+  url               String      @unique
+  fonte             String      // Ex: "Twitter", "G1", "Facebook"
+  
+  // Análise de IA
+  sentimento        Float
+  eFakeNews         Boolean     @default(false)
+  eAtaqueCoordenado Boolean     @default(false)
+  
+  // Métricas
+  alcance           Int?
+  engajamento       Int?
+  
+  timestamp         DateTime
+  
+  // Relacionamentos
+  alerta            AlertaCrise @relation(fields: [alertaId], references: [id])
+  
+  @@map("crises_mencoes")
+}
+
+model Vulnerabilidade {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  
+  titulo            String
+  descricao         String
+  nivelRisco        NivelAmeaca
+  palavrasChave     String[]
+  
+  // Métricas
+  volumeMencoes     Int         @default(0)
+  ultimaAtualizacao DateTime?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("crises_vulnerabilidades")
+}
+
+model PlaybookCrise {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  
+  nome              String
+  descricao         String
+  gatilho           Json?       // Condições para ativação automática
+  
+  // Template de ações
+  tarefasDefinidas  Json        // Template de tarefas (descrição, responsável, prazo)
+  
+  // Métricas
+  vezesUtilizado    Int         @default(0)
+  taxaSucesso       Float?      // 0-1
+  
+  // Relacionamentos
+  alertas           AlertaCrise[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("crises_playbooks")
+}
+
+model TarefaCrise {
+  id                String      @id @default(cuid())
+  alertaId          String
+  
+  descricao         String
+  status            StatusTarefa @default(PENDENTE)
+  responsavelId     String?
+  prazo             DateTime?
+  
+  // Detalhes
+  tipo              String?     // notificar, responder, analisar, etc.
+  prioridade        Int?        // 1-5
+  observacoes       String?
+  
+  concluidaEm       DateTime?
+  
+  // Relacionamentos
+  alerta            AlertaCrise @relation(fields: [alertaId], references: [id])
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("crises_tarefas")
+}
+
+model FonteMonitoramento {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  
+  nome              String
+  tipo              TipoFonte
+  url               String?
+  palavrasChave     String[]
+  
+  ativo             Boolean     @default(true)
+  ultimaColeta      DateTime?
+  itensColetados    Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("crises_fontes_monitoramento")
+}
+
+//============== ENUMS PARA RADAR DE CRISES ==============
+
+enum NivelAmeaca {
+  BAIXO
+  MEDIO
+  ALTO
+  CRITICO
+}
+
+enum StatusAlertaCrise {
+  MONITORANDO
+  EM_RESPOSTA
+  CONTIDA
+  RESOLVIDA
+  ESCALONADA
+}
+
+enum StatusTarefa {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+  BLOQUEADA
+}
+
+enum TipoFonte {
+  TWITTER
+  FACEBOOK
+  INSTAGRAM
+  YOUTUBE
+  TIKTOK
+  NOTICIAS
+  BLOGS
+  FORUNS
+  REDDIT
+  WHATSAPP
+}
+
