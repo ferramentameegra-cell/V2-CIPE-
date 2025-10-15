@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Save, Edit, Plus, Trash2, MapPin, Phone, Mail, Globe, Target, Users, Calendar } from 'lucide-react';
+import { User, Save, Edit, Plus, Trash2, MapPin, Phone, Mail, Globe, Target, Users, Calendar, X } from 'lucide-react';
 
 interface DadosCandidato {
   // Dados Pessoais
