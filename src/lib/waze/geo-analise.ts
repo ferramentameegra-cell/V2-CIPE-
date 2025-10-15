@@ -305,7 +305,7 @@ export function encontrarRotaEvitandoAreas(
 
   for (const area of areasRisco) {
     try {
-      const poly = turf.polygon(area);
+      const poly = turf.polygon(area as any);
       if (turf.booleanIntersects(linha, poly)) {
         // Se intersecta, criar rota alternativa (simplificado: desvio pelo centroide)
         const centroid = calcularCentroPoligono(area);
