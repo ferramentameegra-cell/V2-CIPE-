@@ -444,7 +444,7 @@ export default function MapaInterativo({ candidateId, onAreaClick, onMarkerClick
                 key={`evento-${index}`}
                 latitude={feature.geometry.coordinates[1]}
                 longitude={feature.geometry.coordinates[0]}
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.originalEvent.stopPropagation();
                   setPopup({
                     latitude: feature.geometry.coordinates[1],
@@ -468,7 +468,7 @@ export default function MapaInterativo({ candidateId, onAreaClick, onMarkerClick
               key={membro.id}
               latitude={membro.latitude}
               longitude={membro.longitude}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e.originalEvent.stopPropagation();
                 setPopup({
                   latitude: membro.latitude,
