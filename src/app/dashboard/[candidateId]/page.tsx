@@ -175,6 +175,8 @@ export default function DashboardPage({ params }: DashboardProps) {
         return <PesquisasAuto candidateId={candidateId} />;
       case 'analise-adversarios':
         return <AnaliseAdversarios candidateId={candidateId} />;
+      case 'blindagem-estrategica':
+        return <BlindagemEstrategica candidateId={candidateId} />;
       case 'relatorios':
         return <Relatorios candidateId={candidateId} />;
       case 'orcamento-roi':
@@ -487,6 +489,18 @@ export default function DashboardPage({ params }: DashboardProps) {
                   >
                     <TargetIcon className="h-5 w-5 mr-3" />
                     Análise Adversários
+                  </a>
+                </li>
+                <li className="mb-1">
+                  <a
+                    href="#"
+                    onClick={() => setActiveModule('blindagem-estrategica')}
+                    className={`flex items-center p-2 rounded-lg transition-colors duration-200 ${
+                      activeModule === 'blindagem-estrategica' ? 'bg-blue-600/30 text-blue-300 neon-border' : 'text-white hover:bg-slate-700/50'
+                    }`}
+                  >
+                    <ShieldCheck className="h-5 w-5 mr-3" />
+                    Blindagem Estratégica
                   </a>
                 </li>
               </ul>

@@ -1,0 +1,135 @@
+//============== BLINDAGEM ESTRATÉGICA MODELS ==============
+
+model Argumento {
+  id                String      @id @default(cuid())
+  candidatoId       String
+
+  perguntaChave     String      // A pergunta ou tema principal
+  variacoes         String[]    // Variações da mesma pergunta
+  respostaCurta     String
+  respostaLonga     String      @db.Text
+  
+  // Contexto e Dados
+  dadosSuporte      Json        // Fatos, estatísticas, fontes
+  videosExemplo     String[]    // URLs de vídeos usando o argumento
+  temas             String[]
+  
+  // Metadados
+  status            StatusArgumento @default(EM_REVISAO)
+  forcaArgumento    Int         @default(50) // Score de 0 a 100
+  ultimaRevisao     DateTime    @updatedAt
+
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_argumentos")
+}
+
+model SessaoTreinamento {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  usuarioId         String      // Quem realizou o treinamento
+
+  tipo              TipoTreinamento
+  perfilOponenteIA  String?
+  temasAbordados    String[]
+  transcricao       Json        @db.Text // Transcrição completa da sessão
+  duracao           Int         // em minutos
+  
+  // Métricas da sessão
+  scoreGeral        Float       @default(0)
+  
+  // Relacionamentos
+  analiseId         String?     @unique
+  analise           AnalisePerformance? @relation(fields: [analiseId], references: [id])
+
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_sessoes_treinamento")
+}
+
+model AnalisePerformance {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  
+  titulo            String      // Ex: "Entrevista CNN - 25/10/2025"
+  urlMidia          String?
+  
+  // Métricas de IA
+  scoreConsistencia Float       // 0 a 100, alinhamento com ADI
+  clarezaOratoria   Float       // 0 a 100
+  usoPalavrasMuleta Int
+  contatoVisual     Float?      // % de tempo
+  analiseTomVoz     Json?
+  analiseGestual    Json?
+  feedbackIA        String      @db.Text // Feedback geral gerado pela IA
+
+  // Relacionamentos
+  sessaoTreinamento SessaoTreinamento?
+
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_analises_performance")
+}
+
+model PreparacaoDebate {
+  id                String      @id @default(cuid())
+  candidatoId       String
+
+  nomeDebate        String
+  dataDebate        DateTime
+  oponentes         Json        // Dossiê dos oponentes (estilo, pontos fracos)
+  estrategiaAtaque  String      @db.Text
+  estrategiaDefesa  String      @db.Text
+  talkingPoints     String[]
+
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_preparacao_debates")
+}
+
+model MediaTrainingAsset {
+  id                String      @id @default(cuid())
+  titulo            String
+  descricao         String
+  urlVideo          String
+  categoria         String
+  duracao           Int         // em minutos
+
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_media_training_assets")
+}
+
+model TalkingPoint {
+  id                String      @id @default(cuid())
+  candidatoId       String
+  argumentoId       String?     // Referência ao argumento base
+
+  tema              String
+  publico           String      // Ex: "jovens indecisos"
+  formato           String      // Ex: "entrevista de rádio", "post Instagram"
+  
+  conteudo          String      @db.Text
+  dadosChave        String[]    // Dados e estatísticas principais
+  
+  createdAt         DateTime    @default(now())
+
+  @@map("blindagem_talking_points")
+}
+
+//============== ENUMS PARA BLINDAGEM ESTRATÉGICA ==============
+
+enum StatusArgumento {
+  EM_REVISAO
+  APROVADO
+  OBSOLETO
+  REFORCAR
+}
+
+enum TipoTreinamento {
+  ENTREVISTA
+  DEBATE
+  COLETIVA_IMPRENSA
+  DISCURSO
+}
+
