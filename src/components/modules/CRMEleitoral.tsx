@@ -1195,7 +1195,7 @@ export default function CRMEleitoral({ candidateId }: { candidateId: string }) {
                               <span>{formatTempo(campanha.dataInicio)}</span>
                               <div className="flex items-center space-x-1">
                                 {campanha.canais.map((canal, i) => (
-                                  <Badge key={i} variant="outline" size="sm" className="text-xs">
+                                  <Badge key={i} variant="outline" className="text-xs">
                                     {canal}
                                   </Badge>
                                 ))}
