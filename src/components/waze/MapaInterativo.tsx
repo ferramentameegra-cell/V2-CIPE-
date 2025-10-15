@@ -359,11 +359,11 @@ export default function MapaInterativo({ candidateId, onAreaClick, onMarkerClick
       {/* Mapa Mapbox */}
       <Map
         {...viewState}
-        onMove={(evt) => setViewState(evt.viewState)}
+        onMove={(evt: any) => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
-        onClick={(e) => {
+        onClick={(e: any) => {
           if (onAreaClick) {
             onAreaClick({
               latitude: e.lngLat.lat,
