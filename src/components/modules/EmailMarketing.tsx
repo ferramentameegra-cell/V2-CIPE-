@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Mail, Send, TrendingUp, Users, Target, Eye, Plus } from 'lucide-react';
+import { Mail, Send, TrendingUp, Users, Target, Eye, Plus, BarChart3 } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function EmailMarketing({ candidateId }: { candidateId: string }) {
