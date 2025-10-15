@@ -1,0 +1,187 @@
+//============== FUNIL DE MOBILIZAÇÃO MODELS ==============
+
+model ApoiadorFunil {
+  id                String      @id @default(cuid())
+  eleitorId         String      @unique // Link para o modelo Eleitor do CRM
+  candidatoId       String
+
+  estagio           EstagioDoFunil @default(VISITANTE)
+  pontos            Int         @default(0)
+  nivel             Int         @default(1)
+  
+  // Rastreamento de Engajamento
+  dataEntradaFunil  DateTime    @default(now())
+  ultimaAtividade   DateTime    @updatedAt
+  taxaEngajamento   Float       @default(0) // Score de 0 a 100
+
+  // Recrutamento
+  convidadoPorId    String?     // ID de outro ApoiadorFunil
+  codigoConvite     String      @unique @default(cuid())
+
+  // Relacionamentos
+  missoesConcluidas SubmissaoMissao[]
+  medalhas          ApoiadorMedalha[]
+  convidados        ApoiadorFunil[] @relation("Convites")
+  convidadoPor      ApoiadorFunil?  @relation("Convites", fields: [convidadoPorId], references: [id])
+
+  @@map("mobilizacao_apoiadores")
+}
+
+model Missao {
+  id                String      @id @default(cuid())
+  candidatoId       String
+
+  titulo            String
+  descricao         String
+  tipo              TipoMissao
+  status            StatusMissao @default(ATIVA)
+  
+  pontosRecompensa  Int
+  medalhaId         String?     // ID da Medalha concedida
+  
+  // Configurações
+  limiteConclusoes  Int?        // Limite de vezes que pode ser concluída por apoiador
+  dataInicio        DateTime?
+  dataFim           DateTime?
+  validacao         TipoValidacaoMissao @default(AUTOMATICA)
+  
+  // Métricas
+  adesoes           Int         @default(0)
+  conclusoes        Int         @default(0)
+  taxaSucesso       Float       @default(0)
+
+  // Relacionamentos
+  medalha           Medalha?    @relation(fields: [medalhaId], references: [id])
+  submissoes        SubmissaoMissao[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("mobilizacao_missoes")
+}
+
+model SubmissaoMissao {
+  id                String      @id @default(cuid())
+  missaoId          String
+  apoiadorId        String
+
+  status            StatusSubmissao @default(PENDENTE)
+  dadosSubmissao    Json?       // Ex: URL do post, foto, etc.
+  feedback          String?     // Feedback do admin em caso de rejeição
+
+  // Relacionamentos
+  missao            Missao      @relation(fields: [missaoId], references: [id])
+  apoiador          ApoiadorFunil @relation(fields: [apoiadorId], references: [id])
+
+  createdAt         DateTime    @default(now())
+  
+  @@map("mobilizacao_submissoes")
+}
+
+model CampanhaFunil {
+  id                String      @id @default(cuid())
+  candidatoId       String
+
+  nome              String
+  estagioAlvo       EstagioDoFunil
+  gatilho           Json        // Condições de início da campanha
+  fluxoAcoes        Json        // Sequência de ações (react-flow)
+  status            StatusCampanha @default(ATIVA)
+  
+  // Métricas
+  usuariosImpactados Int        @default(0)
+  acoesExecutadas    Int        @default(0)
+  taxaEngajamento    Float      @default(0)
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("mobilizacao_campanhas")
+}
+
+model Medalha {
+  id                String      @id @default(cuid())
+  nome              String
+  descricao         String
+  iconeUrl          String
+  
+  // Critérios
+  pontosNecessarios Int?
+  tipo              String?     // ouro, prata, bronze, especial
+
+  // Relacionamentos
+  missoes           Missao[]
+  apoiadores        ApoiadorMedalha[]
+
+  createdAt         DateTime    @default(now())
+
+  @@map("mobilizacao_medalhas")
+}
+
+model ApoiadorMedalha {
+  apoiadorId        String
+  medalhaId         String
+  dataConquista     DateTime    @default(now())
+
+  // Relacionamentos
+  apoiador          ApoiadorFunil @relation(fields: [apoiadorId], references: [id])
+  medalha           Medalha     @relation(fields: [medalhaId], references: [id])
+
+  @@id([apoiadorId, medalhaId])
+  @@map("mobilizacao_apoiador_medalhas")
+}
+
+model HistoricoProgressao {
+  id                String      @id @default(cuid())
+  apoiadorId        String
+  estagioAnterior   EstagioDoFunil
+  estagioNovo       EstagioDoFunil
+  motivoProgressao  String?     // Ex: "Completou missão X", "Compartilhou 3 posts"
+  timestamp         DateTime    @default(now())
+
+  @@map("mobilizacao_historico_progressao")
+}
+
+//============== ENUMS PARA FUNIL DE MOBILIZAÇÃO ==============
+
+enum EstagioDoFunil {
+  VISITANTE
+  LEAD
+  ENGAJADO
+  APOIADOR
+  MULTIPLICADOR
+}
+
+enum TipoMissao {
+  DIGITAL
+  FISICA
+  RECRUTAMENTO
+  DOACAO
+}
+
+enum StatusMissao {
+  RASCUNHO
+  ATIVA
+  PAUSADA
+  CONCLUIDA
+}
+
+enum TipoValidacaoMissao {
+  AUTOMATICA
+  MANUAL
+  CHECKIN_EVENTO
+}
+
+enum StatusSubmissao {
+  PENDENTE
+  APROVADA
+  REJEITADA
+}
+
+enum StatusCampanha {
+  RASCUNHO
+  ATIVA
+  PAUSADA
+  ARQUIVADA
+}
+
