@@ -949,7 +949,7 @@ export default function CRMEleitoral({ candidateId }: { candidateId: string }) {
                           <h4 className="font-medium text-white text-sm">{eleitor.nome}</h4>
                           <p className="text-xs text-slate-400">{eleitor.cidade}, {eleitor.estado}</p>
                           <div className="flex items-center space-x-2 mt-1">
-                            <Badge className={getStatusColor(eleitor.status)} size="sm">
+                            <Badge className={getStatusColor(eleitor.status)}>
                               {eleitor.status}
                             </Badge>
                             <span className="text-xs text-slate-500">
