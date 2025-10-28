@@ -299,3 +299,4 @@ enum TipoOperacao {
   CAMPANHA_RAPIDA
 }
 
+

@@ -257,3 +257,4 @@ npx vercel --prod
 **Linhas de código**: 4.643 linhas
 **Tempo estimado**: 6-8 horas de desenvolvimento equivalente
 
+

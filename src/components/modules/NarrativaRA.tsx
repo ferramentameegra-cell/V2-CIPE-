@@ -118,3 +118,4 @@ export default function NarrativaRA({ candidateId }: { candidateId: string }) {
   );
 }
 
+

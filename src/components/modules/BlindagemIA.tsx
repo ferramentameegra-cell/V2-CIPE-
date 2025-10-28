@@ -117,3 +117,4 @@ export default function BlindagemIA({ candidateId }: { candidateId: string }) {
   );
 }
 
+

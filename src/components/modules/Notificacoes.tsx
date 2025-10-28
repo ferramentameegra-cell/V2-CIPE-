@@ -68,3 +68,4 @@ export default function Notificacoes({ candidateId }: { candidateId: string }) {
   );
 }
 
+

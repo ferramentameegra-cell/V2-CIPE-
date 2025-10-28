@@ -135,3 +135,4 @@ export function pontosProximoNivel(nivel: number): number {
   return 1500 + (nivel - 5) * 500;
 }
 
+

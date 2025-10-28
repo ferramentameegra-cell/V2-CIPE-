@@ -75,3 +75,4 @@ export default function LeaderboardMilitancia({ compact = false }: { compact?: b
   );
 }
 
+

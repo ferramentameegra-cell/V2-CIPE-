@@ -238,3 +238,4 @@ export default function MapaVulnerabilidades({ candidateId }: { candidateId: str
   );
 }
 
+

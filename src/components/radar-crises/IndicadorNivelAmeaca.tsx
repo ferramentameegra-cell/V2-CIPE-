@@ -135,3 +135,4 @@ export default function IndicadorNivelAmeaca({ nivel, indice = 50 }: IndicadorPr
   );
 }
 
+

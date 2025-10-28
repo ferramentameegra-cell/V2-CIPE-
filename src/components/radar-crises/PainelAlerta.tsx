@@ -117,3 +117,4 @@ export default function PainelAlerta({ alertaId }: { alertaId: string }) {
   );
 }
 
+

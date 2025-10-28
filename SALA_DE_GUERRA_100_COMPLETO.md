@@ -379,3 +379,4 @@ A **Sala de Guerra** está **100% implementada** conforme o prompt fornecido, co
 
 **Próximo passo**: Conectar ao backend real e APIs de redes sociais.
 
+

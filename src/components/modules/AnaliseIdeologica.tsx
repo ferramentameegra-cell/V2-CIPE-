@@ -687,3 +687,4 @@ export default function AnaliseIdeologica({ candidateId }: { candidateId: string
   );
 }
 
+

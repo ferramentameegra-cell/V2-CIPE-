@@ -95,3 +95,4 @@ export default function Segmentacao({ candidateId }: { candidateId: string }) {
   );
 }
 
+

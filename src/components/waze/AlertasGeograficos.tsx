@@ -231,3 +231,4 @@ export default function AlertasGeograficos({ candidateId }: { candidateId: strin
   );
 }
 
+

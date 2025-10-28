@@ -197,3 +197,4 @@ const productPerformance = [...];
 2. Conectar com backend/database para produção
 3. Configurar integrações OAuth quando necessário
 
+

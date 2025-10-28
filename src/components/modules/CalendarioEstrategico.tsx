@@ -109,3 +109,4 @@ export default function CalendarioEstrategico({ candidateId }: { candidateId: st
   );
 }
 
+

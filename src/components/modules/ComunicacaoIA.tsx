@@ -123,3 +123,4 @@ export default function ComunicacaoIA({ candidateId }: { candidateId: string }) 
   );
 }
 
+

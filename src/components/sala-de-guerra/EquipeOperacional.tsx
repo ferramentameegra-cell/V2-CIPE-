@@ -334,3 +334,4 @@ export default function EquipeOperacional({ candidateId }: { candidateId: string
   )
 }
 
+

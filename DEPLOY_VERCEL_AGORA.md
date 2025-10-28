@@ -108,3 +108,4 @@ Me avise se tiver dúvida em qualquer passo!
 - ❌ Aguardando push para GitHub
 - ❌ Aguardando deploy Vercel
 
+

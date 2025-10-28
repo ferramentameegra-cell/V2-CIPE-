@@ -301,3 +301,4 @@ export function calcularCustoRota(
   return Math.round(custoFixo + custoDistancia + custoTempo);
 }
 
+

@@ -386,3 +386,4 @@ export default function CentralAcoesRapidas({ candidateId }: { candidateId: stri
   )
 }
 
+

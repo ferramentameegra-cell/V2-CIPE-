@@ -371,3 +371,4 @@ O CIPE agora possui uma **Academia de Comunicação de Classe Mundial**:
 **Sessão**: Blindagem Estratégica 100% Completa  
 **Módulos Completos**: 5 de 5 desta sessão ✅
 
+

@@ -108,3 +108,4 @@ Vou commitar o Funil parcial para salvar o progresso!
 **Status**: ✅ 3 módulos completos, 1 parcial
 **Tokens usados**: 268k de 1M
 
+

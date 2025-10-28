@@ -101,3 +101,4 @@ export function calcularBonusSequencia(diasSeguidos: number): number {
   return 0;
 }
 
+

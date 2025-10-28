@@ -73,3 +73,4 @@ Dashboard: http://localhost:3000/dashboard/1014/configuracoes
 Perfil: http://localhost:3000/dashboard/1014/configuracoes/perfil
 Integrações: http://localhost:3000/dashboard/1014/configuracoes/integracao
 
+

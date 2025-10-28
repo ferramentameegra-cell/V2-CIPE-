@@ -43,3 +43,4 @@ export default function Perfil({ candidateId }: { candidateId: string }) {
   );
 }
 
+

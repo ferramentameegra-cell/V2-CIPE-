@@ -124,3 +124,4 @@ export default function PesquisasAuto({ candidateId }: { candidateId: string }) 
   );
 }
 
+

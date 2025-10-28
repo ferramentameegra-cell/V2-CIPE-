@@ -404,3 +404,4 @@ export default function ConfiguracaoNotificacoes({ candidateId }: { candidateId:
   );
 }
 
+

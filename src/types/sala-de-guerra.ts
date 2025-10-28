@@ -177,3 +177,4 @@ export interface EventoHistorico {
   tags: string[];
 }
 
+

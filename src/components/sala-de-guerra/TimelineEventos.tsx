@@ -355,3 +355,4 @@ export default function TimelineEventos({ candidateId }: { candidateId: string }
   )
 }
 
+
