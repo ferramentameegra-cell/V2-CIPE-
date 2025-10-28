@@ -24,8 +24,12 @@ export function analisarConsistencia(
   // Em produção: usar embeddings semânticos (OpenAI, Cohere)
   // e calcular similaridade cosseno
   
-  const desvios = [];
-  const pontosCoerentess = [];
+  const desvios: Array<{
+    trecho: string;
+    argumentoOficial: string;
+    gravidade: 'baixa' | 'media' | 'alta';
+  }> = [];
+  const pontosCoerentess: string[] = [];
   
   // Simulação de análise
   const temas = ['educação', 'saúde', 'segurança', 'economia'];
@@ -71,11 +75,14 @@ export function analisarConsistencia(
 export function calcularSimilaridade(texto1: string, texto2: string): number {
   // Versão simplificada: conta palavras em comum
   // Em produção: usar embeddings
-  const palavras1 = new Set(texto1.toLowerCase().split(/\s+/));
-  const palavras2 = new Set(texto2.toLowerCase().split(/\s+/));
+  const palavras1 = texto1.toLowerCase().split(/\s+/);
+  const palavras2 = texto2.toLowerCase().split(/\s+/);
   
-  const intersecao = new Set([...palavras1].filter(x => palavras2.has(x)));
-  const uniao = new Set([...palavras1, ...palavras2]);
+  const set1 = new Set(palavras1);
+  const set2 = new Set(palavras2);
   
-  return (intersecao.size / uniao.size) * 100;
+  const intersecao = palavras1.filter(x => set2.has(x));
+  const uniao = Array.from(new Set([...palavras1, ...palavras2]));
+  
+  return (intersecao.length / uniao.length) * 100;
 }

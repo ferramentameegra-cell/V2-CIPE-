@@ -78,13 +78,16 @@ export function detectarAtaqueCoordenado(
  * Calcula similaridade entre dois textos (Jaccard simplificado)
  */
 function calcularSimilaridade(texto1: string, texto2: string): number {
-  const palavras1 = new Set(texto1.split(/\s+/));
-  const palavras2 = new Set(texto2.split(/\s+/));
+  const palavras1 = texto1.split(/\s+/);
+  const palavras2 = texto2.split(/\s+/);
   
-  const intersecao = new Set([...palavras1].filter(p => palavras2.has(p)));
-  const uniao = new Set([...palavras1, ...palavras2]);
+  const set1 = new Set(palavras1);
+  const set2 = new Set(palavras2);
   
-  return intersecao.size / uniao.size;
+  const intersecao = palavras1.filter(p => set2.has(p));
+  const uniao = Array.from(new Set([...palavras1, ...palavras2]));
+  
+  return intersecao.length / uniao.length;
 }
 
 /**
