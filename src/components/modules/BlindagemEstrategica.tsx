@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Target, Database, Zap, TrendingUp, Award, Video, BookOpen } from 'lucide-react';
+import { Shield, Target, Database, Zap, TrendingUp, Award, Video, BookOpen, FileCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScoreProntidao from '@/components/blindagem/ScoreProntidao';
 import AcessoRapido from '@/components/blindagem/AcessoRapido';
@@ -12,6 +12,8 @@ import BancoArgumentos from '@/components/blindagem/BancoArgumentos';
 import AnalisePerformance from '@/components/blindagem/AnalisePerformance';
 import GeradorTalkingPoints from '@/components/blindagem/GeradorTalkingPoints';
 import HubDebate from '@/components/blindagem/HubDebate';
+import AnaliseConsistencia from '@/components/blindagem/AnaliseConsistencia';
+import PlayerTreinamento from '@/components/blindagem/PlayerTreinamento';
 
 interface BlindagemEstrategicaProps {
   candidateId: string;
@@ -185,6 +187,24 @@ export default function BlindagemEstrategica({ candidateId }: BlindagemEstrategi
           <h2 className="text-xl font-bold text-white">5. ANÁLISE DE PERFORMANCE</h2>
         </div>
         <AnalisePerformance candidateId={candidateId} />
+      </div>
+
+      {/* SEÇÃO 8: ANÁLISE DE CONSISTÊNCIA */}
+      <div className="border-t-2 border-cyan-500/30 pt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <FileCheck className="w-6 h-6 text-cyan-400" />
+          <h2 className="text-xl font-bold text-white">6. ANÁLISE DE CONSISTÊNCIA DA MENSAGEM</h2>
+        </div>
+        <AnaliseConsistencia candidateId={candidateId} />
+      </div>
+
+      {/* SEÇÃO 9: BIBLIOTECA DE MEDIA TRAINING */}
+      <div className="border-t-2 border-teal-500/30 pt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <BookOpen className="w-6 h-6 text-teal-400" />
+          <h2 className="text-xl font-bold text-white">7. BIBLIOTECA DE MEDIA TRAINING</h2>
+        </div>
+        <PlayerTreinamento candidateId={candidateId} />
       </div>
     </div>
   );
