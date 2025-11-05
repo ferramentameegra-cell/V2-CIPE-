@@ -101,4 +101,35 @@ export function calcularBonusSequencia(diasSeguidos: number): number {
   return 0;
 }
 
+/**
+ * Credita pontos a um apoiador e calcula novo nível
+ */
+export function creditarPontos(
+  apoiador: { pontos: number; nivel: number },
+  pontosGanhos: number
+): {
+  novoTotalPontos: number;
+  novoNivel: number;
+  subiuNivel: boolean;
+} {
+  const novoTotalPontos = apoiador.pontos + pontosGanhos;
+  
+  // Calcular novo nível baseado nos pontos
+  let novoNivel = apoiador.nivel;
+  let pontosNecessarios = calcularPontosNivel(novoNivel + 1);
+  
+  while (novoTotalPontos >= pontosNecessarios && novoNivel < 100) {
+    novoNivel++;
+    pontosNecessarios = calcularPontosNivel(novoNivel + 1);
+  }
+  
+  const subiuNivel = novoNivel > apoiador.nivel;
+  
+  return {
+    novoTotalPontos,
+    novoNivel,
+    subiuNivel
+  };
+}
+
 
